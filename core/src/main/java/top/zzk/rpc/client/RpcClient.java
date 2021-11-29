@@ -3,12 +3,15 @@ package top.zzk.rpc.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.zzk.rpc.common.entity.RpcRequest;
+import top.zzk.rpc.common.entity.RpcResponse;
+import top.zzk.rpc.common.enumeration.RpcError;
+import top.zzk.rpc.common.enumeration.RpcResponseCode;
+import top.zzk.rpc.common.exception.RpcException;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
  * @author zzk
@@ -24,10 +27,20 @@ public class RpcClient {
             ObjectOutputStream out = new ObjectOutputStream((socket.getOutputStream()));
             out.writeObject(rpcRequest);
             out.flush();
-            return in.readObject();
+            RpcResponse response = (RpcResponse) in.readObject();
+            if (response == null) {
+                logger.error("服务调用失败,service:{}", rpcRequest.getInterfaceName());
+                throw new RpcException(RpcError.SERVICE_INVOCATION_FAILURE,
+                        "service:" + rpcRequest.getInterfaceName());
+            }
+            if (response.getStatusCode() == null || response.getStatusCode() != RpcResponseCode.SUCCESS.getCode()) {
+                logger.error("服务调用失败，service:{}, response:{}", rpcRequest.getInterfaceName(),
+                        response);
+            }
+            return response.getData();
         } catch (IOException | ClassNotFoundException e) {
             logger.error("调用时发生错误：");
-            return null;
+            throw new RpcException("服务调用失败：", e);
         }
     }
 }

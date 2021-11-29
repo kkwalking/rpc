@@ -16,6 +16,7 @@ public class HelloServiceImpl implements HelloService {
     
     @Override
     public String hello(HelloObject object) {
+        logger.info("接收信息(id:{})：{}",object.getId(),object.getMessage());
         return "reply for \"" + object.getMessage() + "\":welcome! ";
     }
 }

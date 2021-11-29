@@ -10,7 +10,7 @@ import top.zzk.rpc.client.RpcClientProxy;
  */
 public class ClientTest {
     @Test
-    public void clientboot() {
+    public void clientBoot() {
         RpcClientProxy proxy = new RpcClientProxy("127.0.0.1", 8888);
         HelloService helloService = proxy.getProxy(HelloService.class);
         HelloObject object = new HelloObject(1, "this is zzk");

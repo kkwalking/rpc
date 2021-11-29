@@ -18,8 +18,8 @@ public class RpcServer {
     private static final Logger logger = LoggerFactory.getLogger(RpcServer.class);
 
     public RpcServer() {
-        int corePoolSize = 3;
-        int maxPoolSize = 25;
+        int corePoolSize = 5;
+        int maxPoolSize = 50;
         int keepAliveTime = 60;
         BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<Runnable>(100);
         ThreadFactory threadFactory = Executors.defaultThreadFactory();
@@ -33,8 +33,8 @@ public class RpcServer {
             logger.info(service.getClass().getSimpleName() + "服务正在启动...");
             Socket socket;
             while ((socket = serverSocket.accept()) != null) {
-                logger.info("客户端连接，其IP为：" + socket.getInetAddress());
-                threadPool.execute(new WorkerThead(socket, service));
+                logger.info("客户端连接，(ip:{}, port:{})" ,socket.getInetAddress(),socket.getPort());
+                threadPool.execute(new RequestHandler(socket, service));
             }
         } catch (IOException e) {
             logger.error("连接时发生错误：", e);

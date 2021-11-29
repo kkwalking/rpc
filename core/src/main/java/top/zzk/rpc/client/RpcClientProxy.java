@@ -1,5 +1,7 @@
 package top.zzk.rpc.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.zzk.rpc.common.entity.RpcRequest;
 import top.zzk.rpc.common.entity.RpcResponse;
 
@@ -13,6 +15,7 @@ import java.lang.reflect.Proxy;
  * description
  */
 public class RpcClientProxy implements InvocationHandler {
+    private static final Logger logger = LoggerFactory.getLogger(RpcClientProxy.class);
     private String host;
     private int port;
 
@@ -23,6 +26,7 @@ public class RpcClientProxy implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        logger.info("调用方法:{}#{}", method.getDeclaringClass().getCanonicalName(), method.getName());
         RpcRequest request = RpcRequest.builder()
                 .interfaceName(method.getDeclaringClass().getName())
                 .methodName(method.getName())
@@ -30,7 +34,8 @@ public class RpcClientProxy implements InvocationHandler {
                 .paramTypes(method.getParameterTypes())
                 .build();
         RpcClient client = new RpcClient();
-        return ((RpcResponse)client.sendRequest(request, host, port)).getData();
+        //返回整个响应
+        return client.sendRequest(request, host, port);
     }
 
     @SuppressWarnings("unchecked")
