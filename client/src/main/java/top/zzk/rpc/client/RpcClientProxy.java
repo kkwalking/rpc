@@ -3,7 +3,6 @@ package top.zzk.rpc.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.zzk.rpc.common.entity.RpcRequest;
-import top.zzk.rpc.common.entity.RpcResponse;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

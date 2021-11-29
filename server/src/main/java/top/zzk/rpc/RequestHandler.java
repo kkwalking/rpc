@@ -1,4 +1,4 @@
-package top.zzk.rpc.server;
+package top.zzk.rpc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

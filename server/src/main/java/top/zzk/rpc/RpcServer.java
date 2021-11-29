@@ -1,4 +1,4 @@
-package top.zzk.rpc.server;
+package top.zzk.rpc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,8 @@ public class RpcServer {
 
     public void register(Object service, int port) {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            logger.info(service.getClass().getSimpleName() + "服务正在启动...");
+            logger.info("服务器已启动...");
+            logger.info("{}服务正在运行,监听端口:{}", service.getClass().getCanonicalName(), port);
             Socket socket;
             while ((socket = serverSocket.accept()) != null) {
                 logger.info("客户端连接，(ip:{}, port:{})" ,socket.getInetAddress(),socket.getPort());
