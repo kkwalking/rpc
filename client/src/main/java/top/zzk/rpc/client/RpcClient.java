@@ -23,13 +23,11 @@ public class RpcClient {
 
     public Object sendRequest(RpcRequest rpcRequest, String host, int port) {
         try (Socket socket = new Socket(host, port)) {
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream out = new ObjectOutputStream((socket.getOutputStream()));
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             out.writeObject(rpcRequest);
-            logger.info("write request to socket({}:{})", host, port);
             out.flush();
             RpcResponse response = (RpcResponse) in.readObject();
-            logger.info("write response from socket({}:{}), response:{}", host, port,response);
             if (response == null) {
                 logger.error("服务调用失败,service:{}", rpcRequest.getInterfaceName());
                 throw new RpcException(RpcError.SERVICE_INVOCATION_FAILURE,

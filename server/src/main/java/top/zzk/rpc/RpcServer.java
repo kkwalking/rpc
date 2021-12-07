@@ -43,7 +43,7 @@ public class RpcServer {
                 logger.info("客户端连接，(ip:{}, port:{})", socket.getInetAddress(), socket.getPort());
                 threadPool.execute(new RequestHandlerThread(socket, requestHandler, serviceRegistry));
             }
-//            threadPool.shutdown();
+            threadPool.shutdown();
         } catch (IOException e) {
             logger.error("服务器启动时发生错误：", e);
         }

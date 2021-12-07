@@ -25,7 +25,7 @@ public class RpcClientProxy implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        logger.info("调用方法:{}#{}", method.getDeclaringClass().getCanonicalName(), method.getName());
+//        logger.info("调用方法:{}#{}", method.getDeclaringClass().getCanonicalName(), method.getName());
         RpcRequest request = RpcRequest.builder()
                 .interfaceName(method.getDeclaringClass().getName())
                 .methodName(method.getName())

@@ -27,9 +27,11 @@ public class RequestHandlerThread implements Runnable {
 
     @Override
     public void run() {
-        try (ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream())) {
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+                ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream())
+             ) {
             RpcRequest rpcRequest = (RpcRequest) objectInputStream.readObject();
+            logger.info("请求服务:{},请求方法{}", rpcRequest.getInterfaceName(),rpcRequest.getMethodName());
             String interfaceName = rpcRequest.getInterfaceName();
             Object service = serviceRegistry.getService(interfaceName);
             Object result = requestHandler.handle(rpcRequest, service);

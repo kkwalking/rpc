@@ -17,18 +17,21 @@ public class RpcClientBootstrap {
         usage: RpcClientBootstrap <ip> <port>
      */
     public static void main(String[] args) {
-//        if(args.length !=2) {
-//            System.out.println("A Specific IP address and port is required");
-//            System.out.println("Usage: RpcClientBootstrap <IP> <Port>");
-//        }
-//        String ip = args[0];
-//        int port = Integer.parseInt(args[1]);
-        RpcClientProxy proxy = new RpcClientProxy("127.0.0.1", 8080);
-        System.out.println("got the client proxy");
+        if(args.length !=2) {
+            System.out.println("A Specific IP address and port is required");
+            System.out.println("Usage: RpcClientBootstrap <IP> <Port>");
+            return;
+        }
+        String ip = args[0];
+        int port = Integer.parseInt(args[1]);
+        RpcClientProxy proxy = new RpcClientProxy(ip, port);
         EchoService echoService = proxy.getProxy(EchoService.class);
-        System.out.println("task:get the service proxy");
         EchoMessage message = new EchoMessage(1, "this is zzk");
         String res = echoService.echo("hello zzk");
+        System.out.println(res);
+        HelloService helloService = proxy.getProxy(HelloService.class);
+        HelloObject helloMessage = new HelloObject(2, "hello message from zzk");
+        res = helloService.hello(helloMessage);
         System.out.println(res);
     }
 }
