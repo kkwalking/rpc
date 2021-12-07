@@ -1,6 +1,5 @@
 package top.zzk.rpc.common.entity;
 
-import lombok.Builder;
 import lombok.Data;
 import top.zzk.rpc.common.enumeration.RpcResponseCode;
 

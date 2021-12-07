@@ -9,8 +9,9 @@ import lombok.Getter;
  * @date 2021/11/28
  * description
  */
-@Getter
+
 @AllArgsConstructor
+@Getter
 public enum RpcResponseCode {
     SUCCESS(200, "method call success"),
     FAIL(500, "method call fail"),

@@ -5,7 +5,7 @@ import top.zzk.rpc.common.enumeration.RpcError;
 /**
  * @author zzk
  * @date 2021/11/28
- * description
+ * description RPC调用异常
  */
 public class RpcException extends RuntimeException {
     public RpcException(RpcError error, String detail) {

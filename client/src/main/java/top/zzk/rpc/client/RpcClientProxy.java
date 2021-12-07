@@ -15,8 +15,8 @@ import java.lang.reflect.Proxy;
  */
 public class RpcClientProxy implements InvocationHandler {
     private static final Logger logger = LoggerFactory.getLogger(RpcClientProxy.class);
-    private String host;
-    private int port;
+    private final String host;
+    private final int port;
 
     public RpcClientProxy(String host, int port) {
         this.host = host;
@@ -38,7 +38,7 @@ public class RpcClientProxy implements InvocationHandler {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getProxy(Class<T> claszz) {
-        return (T) Proxy.newProxyInstance(claszz.getClassLoader(), new Class<?>[]{claszz}, this);
+    public <T> T getProxy(Class<T> clazz) {
+        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class<?>[]{clazz}, this);
     }
 }
