@@ -1,18 +1,17 @@
-package top.zzk.rpc.client;
+package top.zzk.rpc.client.raw;
 
 import top.zzk.rpc.api.EchoMessage;
 import top.zzk.rpc.api.EchoService;
 import top.zzk.rpc.api.HelloObject;
 import top.zzk.rpc.api.HelloService;
-
-import java.nio.Buffer;
+import top.zzk.rpc.client.RpcClient;
 
 /**
  * @author zzk
  * @date 2021/11/29
  * description
  */
-public class RpcClientBootstrap {
+public class SocketClientBootstrap {
     /*
         usage: RpcClientBootstrap <ip> <port>
      */
@@ -24,7 +23,8 @@ public class RpcClientBootstrap {
         }
         String ip = args[0];
         int port = Integer.parseInt(args[1]);
-        RpcClientProxy proxy = new RpcClientProxy(ip, port);
+        RpcClient socketClient = new SocketClient(ip,port);
+        RpcClientProxy proxy = new RpcClientProxy(socketClient);
         EchoService echoService = proxy.getProxy(EchoService.class);
         EchoMessage message = new EchoMessage(1, "this is zzk");
         String res = echoService.echo("hello zzk");

@@ -1,7 +1,8 @@
-package top.zzk.rpc;
+package top.zzk.rpc.raw;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.zzk.rpc.RequestHandler;
 import top.zzk.rpc.common.entity.RpcRequest;
 import top.zzk.rpc.common.entity.RpcResponse;
 import top.zzk.rpc.common.registry.ServiceRegistry;
@@ -15,12 +16,10 @@ public class RequestHandlerThread implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandlerThread.class);
 
     private Socket socket;
-    private RequestHandler requestHandler;
     private ServiceRegistry serviceRegistry;
 
-    public RequestHandlerThread(Socket socket, RequestHandler requestHandler, ServiceRegistry serviceRegistry) {
+    public RequestHandlerThread(Socket socket,ServiceRegistry serviceRegistry) {
         this.socket = socket;
-        this.requestHandler = requestHandler;
         this.serviceRegistry = serviceRegistry;
     }
 
@@ -34,7 +33,7 @@ public class RequestHandlerThread implements Runnable {
             logger.info("请求服务:{},请求方法{}", rpcRequest.getInterfaceName(),rpcRequest.getMethodName());
             String interfaceName = rpcRequest.getInterfaceName();
             Object service = serviceRegistry.getService(interfaceName);
-            Object result = requestHandler.handle(rpcRequest, service);
+            Object result = RequestHandler.handle(rpcRequest, service);
             objectOutputStream.writeObject(RpcResponse.success(result));
             objectOutputStream.flush();
         } catch (IOException | ClassNotFoundException e) {

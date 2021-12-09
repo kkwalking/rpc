@@ -6,4 +6,6 @@
 The project is a tiny framework of RPC in the PRC learning process.
 
 > 学习RPC过程中实现的简单RPC框架
+>
+这一版计划加入使用Netty方式进行通信的特性
 

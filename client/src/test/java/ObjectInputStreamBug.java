@@ -99,11 +99,8 @@ public class ObjectInputStreamBug {
 
     @Test
     public void ObjectClient() {
-        RpcRequest rpcRequest = RpcRequest.builder().interfaceName("HelloService")
-                .methodName("hello")
-                .paramTypes(new Class[]{String.class})
-                .params(new Object[]{"zzk"})
-                .build();
+        RpcRequest rpcRequest = new RpcRequest("HelloService", "hello",
+                new Object[]{"zzk"}, new Class[]{String.class});
         String host = "127.0.0.1";
         int port = 9090;
         try (Socket socket = new Socket(host, port)) {

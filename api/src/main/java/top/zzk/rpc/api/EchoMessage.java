@@ -8,6 +8,9 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 public class EchoMessage implements Serializable {
+    public EchoMessage() {
+    }
+
     private Integer id;
     private String echoContent;
 }

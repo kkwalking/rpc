@@ -12,6 +12,7 @@ import java.io.Serializable;
  */
 @Data
 public class RpcResponse<T> implements Serializable {
+    
 
     /**
      * 响应状态码
