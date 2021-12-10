@@ -11,5 +11,20 @@
 
     <artifactId>common</artifactId>
 
+    <dependencies>
+        <!--    keyo序列化-->
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>4.0.2</version>
+        </dependency>
+<!--        hessian序列化-->
+        <dependency>
+            <groupId>com.caucho</groupId>
+            <artifactId>hessian</artifactId>
+            <version>4.0.63</version>
+        </dependency>
+    </dependencies>
+
 
 </project>

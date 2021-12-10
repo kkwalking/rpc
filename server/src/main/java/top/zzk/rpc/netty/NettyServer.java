@@ -12,7 +12,9 @@ import top.zzk.rpc.RpcServer;
 import top.zzk.rpc.common.codec.CommonDecoder;
 import top.zzk.rpc.common.codec.CommonEncoder;
 import top.zzk.rpc.common.registry.ServiceRegistry;
+import top.zzk.rpc.common.serializer.HessianSerializer;
 import top.zzk.rpc.common.serializer.JsonSerializer;
+import top.zzk.rpc.common.serializer.KryoSerializer;
 
 /**
  * @author zzk
@@ -44,7 +46,9 @@ public class NettyServer implements RpcServer {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
-                            pipeline.addLast(new CommonEncoder(new JsonSerializer()));
+//                            pipeline.addLast(new CommonEncoder(new JsonSerializer()));
+//                            pipeline.addLast(new CommonEncoder(new KryoSerializer()));
+                            pipeline.addLast(new CommonEncoder(new HessianSerializer()));
                             pipeline.addLast(new CommonDecoder());
                             pipeline.addLast(new NettyServerHandler(registry));
                         }

@@ -12,7 +12,9 @@ import top.zzk.rpc.common.codec.CommonDecoder;
 import top.zzk.rpc.common.codec.CommonEncoder;
 import top.zzk.rpc.common.entity.RpcRequest;
 import top.zzk.rpc.common.entity.RpcResponse;
+import top.zzk.rpc.common.serializer.HessianSerializer;
 import top.zzk.rpc.common.serializer.JsonSerializer;
+import top.zzk.rpc.common.serializer.KryoSerializer;
 
 /**
  * @author zzk
@@ -42,7 +44,9 @@ public class NettyClient implements RpcClient {
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         ChannelPipeline pipeline = socketChannel.pipeline();
                         pipeline.addLast(new CommonDecoder())
-                                .addLast(new CommonEncoder(new JsonSerializer()))
+//                                .addLast(new CommonEncoder(new JsonSerializer()))
+//                                .addLast(new CommonEncoder(new KryoSerializer()))
+                                .addLast(new CommonEncoder(new HessianSerializer()))
                                 .addLast(new NettyClientHandler());
                     }
                 });
