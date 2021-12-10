@@ -9,10 +9,9 @@ import java.io.Serializable;
 /**
  * @author zzk
  * @date 2021/11/27 20:40
- * description demo使用api
+ * description 测试用API
  *
  */
-
 @Data
 @AllArgsConstructor
 public class HelloObject implements Serializable {

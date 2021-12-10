@@ -13,7 +13,7 @@ import java.util.concurrent.*;
 /**
  * @author zzk
  * @date 2021/11/28
- * description  rpc的提供者（服务端）
+ * description  Socket服务器
  */
 public class SocketServer implements RpcServer {
 

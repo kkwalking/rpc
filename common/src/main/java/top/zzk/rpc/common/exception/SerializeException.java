@@ -3,7 +3,7 @@ package top.zzk.rpc.common.exception;
 /**
  * @author zzk
  * @date 2021/12/10
- * description
+ * description 自定义RPC序列化异常
  */
 public class SerializeException extends RuntimeException {
     public SerializeException() {

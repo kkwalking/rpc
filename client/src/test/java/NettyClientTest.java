@@ -9,7 +9,7 @@ import top.zzk.rpc.client.raw.RpcClientProxy;
 /**
  * @author zzk
  * @date 2021/12/9
- * description
+ * description  对netty客户端进行功能点测试
  */
 public class NettyClientTest {
     @Test

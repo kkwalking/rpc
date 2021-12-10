@@ -17,7 +17,7 @@ import java.net.Socket;
 /**
  * @author zzk
  * @date 2021/11/28
- * description  rpc客户端
+ * description  rpc客户端使用JDK原生socket
  */
 public class SocketClient implements RpcClient {
     private static final Logger logger = LoggerFactory.getLogger(SocketClient.class);

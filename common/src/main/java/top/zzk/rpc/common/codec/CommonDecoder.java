@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * @author zzk
  * @date 2021/12/8
- * description
+ * description  通用解码器（入站）
  */
 @Slf4j
 public class CommonDecoder extends ReplayingDecoder {

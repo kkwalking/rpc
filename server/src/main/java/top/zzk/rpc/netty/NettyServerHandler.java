@@ -11,7 +11,7 @@ import top.zzk.rpc.common.registry.ServiceRegistry;
 /**
  * @author zzk
  * @date 2021/12/9
- * description
+ * description Netty服务器入站处理，在这里可以对入站数据进行处理
  */
 @Slf4j
 public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> {

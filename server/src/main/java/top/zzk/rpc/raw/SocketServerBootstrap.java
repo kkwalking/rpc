@@ -11,7 +11,7 @@ import top.zzk.rpc.serviceImpl.HelloServiceImpl;
 /**
  * @author zzk
  * @date 2021/11/29
- * description 服务端socket方式启动类
+ * description socket服务端启动类
  */
 public class SocketServerBootstrap {
     public static void main(String[] args) {

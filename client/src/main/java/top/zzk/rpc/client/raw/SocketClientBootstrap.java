@@ -9,7 +9,7 @@ import top.zzk.rpc.client.RpcClient;
 /**
  * @author zzk
  * @date 2021/11/29
- * description
+ * description  socket客户端启动类
  */
 public class SocketClientBootstrap {
     /*

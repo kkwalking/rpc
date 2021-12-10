@@ -8,7 +8,9 @@ import top.zzk.rpc.common.exception.RpcException;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
+/**
+ * 默认服务注册中心
+ **/
 public class DefaultServiceRegistry implements ServiceRegistry{
     private static final Logger logger = LoggerFactory.getLogger(DefaultServiceRegistry.class);
     

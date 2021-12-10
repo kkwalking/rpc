@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * @author zzk
  * @date 2021/11/28
- * description
+ * description RPC请求封装包
  */
 @Data
 @AllArgsConstructor

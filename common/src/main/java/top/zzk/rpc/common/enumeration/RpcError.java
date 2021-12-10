@@ -6,7 +6,7 @@ import lombok.Getter;
 /**
  * @author zzk
  * @date 2021/11/28
- * description
+ * description RPC错误消息定义
  */
 @AllArgsConstructor
 @Getter

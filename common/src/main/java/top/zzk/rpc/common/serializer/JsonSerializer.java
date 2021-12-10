@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * @author zzk
  * @date 2021/12/8
- * description
+ * description 使用Json进行序列化
  */
 @Slf4j
 public class JsonSerializer implements Serializer {

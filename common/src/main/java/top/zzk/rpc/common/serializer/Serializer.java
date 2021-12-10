@@ -4,7 +4,7 @@ package top.zzk.rpc.common.serializer;
 /**
  * @author zzk
  * @date 2021/12/8
- * description
+ * description  自定义序列化器接口
  */
 public interface Serializer {
     int KRYO_SERIALIZER = 0;

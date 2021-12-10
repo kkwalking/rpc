@@ -10,7 +10,7 @@ import top.zzk.rpc.common.serializer.Serializer;
 /**
  * @author zzk
  * @date 2021/12/8
- * description  消息编码器 （object -> bytes）  
+ * description  通用编码器 （出站）  
  *              包格式: 
  *                  magicCode :  4 bytes
  *                  packageType: 4 bytes

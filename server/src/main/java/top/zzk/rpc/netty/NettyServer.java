@@ -19,7 +19,7 @@ import top.zzk.rpc.common.serializer.KryoSerializer;
 /**
  * @author zzk
  * @date 2021/12/9
- * description 使用netty实现NIO方式
+ * description 使用netty实现NIO方式通信的服务器
  */
 @Slf4j
 public class NettyServer implements RpcServer {

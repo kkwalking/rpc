@@ -10,7 +10,7 @@ import top.zzk.rpc.common.entity.RpcResponse;
 /**
  * @author zzk
  * @date 2021/12/9
- * description
+ * description netty客户端入站处理器，在这里可以实现对入站数据的操作
  */
 @Slf4j
 public class NettyClientHandler extends SimpleChannelInboundHandler<RpcResponse> {

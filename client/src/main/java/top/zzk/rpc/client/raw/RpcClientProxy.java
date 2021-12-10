@@ -12,7 +12,7 @@ import java.lang.reflect.Proxy;
 /**
  * @author zzk
  * @date 2021/11/28
- * description
+ * description RPC客户端动态代理
  */
 public class RpcClientProxy implements InvocationHandler {
     private static final Logger logger = LoggerFactory.getLogger(RpcClientProxy.class);

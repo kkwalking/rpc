@@ -17,14 +17,14 @@ import java.net.SocketException;
 /**
  * @author zzk
  * @date 2021/12/7
- * description
+ * description  对Socket客户端进行功能点测试
  */
 @Slf4j
-public class ObjectInputStreamBug {
+public class SocketClientTest {
     private static final int BUFSIZE = 32;
 
     /*
-    原生字节流顺序测试，测试结果：无关
+    原生字节流顺序测试，测试是否与打开输入输出流的顺序有关，测试结果：无关
      */
     @Test
     public void ByteStreamServer() throws IOException {
@@ -49,7 +49,7 @@ public class ObjectInputStreamBug {
 
 
     /*
-     测试inputstream 和outstream的相对位置是否是产生bug的原因
+     测试Inputstream 和oOutputstream的相对位置是否是产生bug的原因
      */
     @Test
     public void ByteStreamServerClient() throws IOException {

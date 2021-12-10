@@ -15,7 +15,7 @@ import java.io.IOException;
 /**
  * @author zzk
  * @date 2021/12/10
- * description
+ * description 使用kryo进行序列化
  */
 @Slf4j
 public class KryoSerializer implements Serializer {

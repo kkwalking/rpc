@@ -11,9 +11,13 @@ import top.zzk.rpc.serviceImpl.HelloServiceImpl;
 /**
  * @author zzk
  * @date 2021/12/9
- * description
+ * description  Netty服务器测试类
  */
 public class NettyServerTest {
+    
+    /* 
+    启动测试
+     */
     @Test
     public void bootstrap() {
         ServiceRegistry registry = new DefaultServiceRegistry();

@@ -6,7 +6,6 @@ package top.zzk.rpc.api;
  * description demo使用api
  *
  */
-
 public interface HelloService {
     String hello(HelloObject object);
 }

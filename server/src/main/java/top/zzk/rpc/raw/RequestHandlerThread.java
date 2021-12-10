@@ -12,6 +12,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+
+/**
+ * @author zzk
+ * description Socket服务器处理线程，在这里对请求数据进行处理
+ */
+
 public class RequestHandlerThread implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandlerThread.class);
 

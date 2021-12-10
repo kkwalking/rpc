@@ -3,7 +3,7 @@ package top.zzk.rpc.common.registry;
 /**
  * @author zzk
  * @date 2021/12/6
- * description
+ * description 服务注册中心接口
  */
 public interface ServiceRegistry {
     
