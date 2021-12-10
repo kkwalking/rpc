@@ -11,10 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 import top.zzk.rpc.RpcServer;
 import top.zzk.rpc.common.codec.CommonDecoder;
 import top.zzk.rpc.common.codec.CommonEncoder;
+import top.zzk.rpc.common.enumeration.RpcError;
+import top.zzk.rpc.common.exception.RpcException;
 import top.zzk.rpc.common.registry.ServiceRegistry;
 import top.zzk.rpc.common.serializer.HessianSerializer;
 import top.zzk.rpc.common.serializer.JsonSerializer;
 import top.zzk.rpc.common.serializer.KryoSerializer;
+import top.zzk.rpc.common.serializer.Serializer;
 
 /**
  * @author zzk
@@ -25,6 +28,7 @@ import top.zzk.rpc.common.serializer.KryoSerializer;
 public class NettyServer implements RpcServer {
     
     private ServiceRegistry registry;
+    private Serializer serializer;
 
     public NettyServer(ServiceRegistry registry) {
         this.registry = registry;
@@ -32,6 +36,10 @@ public class NettyServer implements RpcServer {
 
     @Override
     public void start(int port) {
+        if (serializer == null) {
+            log.error("序列化器未初始化");
+            throw new RpcException(RpcError.SERIALIZER_UNDEFINED);
+        }
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workGroup = new NioEventLoopGroup();
         try {
@@ -46,9 +54,7 @@ public class NettyServer implements RpcServer {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
-//                            pipeline.addLast(new CommonEncoder(new JsonSerializer()));
-//                            pipeline.addLast(new CommonEncoder(new KryoSerializer()));
-                            pipeline.addLast(new CommonEncoder(new HessianSerializer()));
+                            pipeline.addLast(new CommonEncoder(serializer));
                             pipeline.addLast(new CommonDecoder());
                             pipeline.addLast(new NettyServerHandler(registry));
                         }
@@ -62,5 +68,10 @@ public class NettyServer implements RpcServer {
             workGroup.shutdownGracefully();
         }
 
+    }
+
+    @Override
+    public void setSerializer(Serializer serializer) {
+        this.serializer = serializer;
     }
 }

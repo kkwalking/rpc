@@ -16,7 +16,10 @@ public enum RpcError {
     SERVICE_NOT_IMPLEMENT_ANY_INTERFACE("注册服务未实现任何接口"),
     UNKNOWN_PROTOCOL("不识别的协议包"),
     UNKNOWN_SERIALIZER("不识别的（反）序列化器"),
-    UNKNOWN_PACKAGE_TYPE("不识别的数据包类型")
+    UNKNOWN_PACKAGE_TYPE("不识别的数据包类型"),
+    SERIALIZER_UNDEFINED("序列化器未定义"),
+    ENCODING_ERROR("编码协议包时发生错误"),
+    DECODING_ERROR("解码协议包时发生错误")
     ;
     private final String errorMessage;
     

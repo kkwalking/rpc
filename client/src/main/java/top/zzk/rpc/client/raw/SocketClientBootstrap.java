@@ -5,6 +5,8 @@ import top.zzk.rpc.api.EchoService;
 import top.zzk.rpc.api.HelloObject;
 import top.zzk.rpc.api.HelloService;
 import top.zzk.rpc.client.RpcClient;
+import top.zzk.rpc.common.serializer.HessianSerializer;
+import top.zzk.rpc.common.serializer.JsonSerializer;
 
 /**
  * @author zzk
@@ -23,7 +25,10 @@ public class SocketClientBootstrap {
         }
         String ip = args[0];
         int port = Integer.parseInt(args[1]);
+        //初始化一个客户端并分配一个序列化器给它
         RpcClient socketClient = new SocketClient(ip,port);
+        socketClient.setSerializer(new JsonSerializer());
+        
         RpcClientProxy proxy = new RpcClientProxy(socketClient);
         EchoService echoService = proxy.getProxy(EchoService.class);
         EchoMessage message = new EchoMessage(1, "this is zzk");

@@ -1,5 +1,7 @@
 package top.zzk.rpc;
 
+import top.zzk.rpc.common.serializer.Serializer;
+
 /**
  * @author zzk
  * @date 2021/12/8
@@ -7,4 +9,5 @@ package top.zzk.rpc;
  */
 public interface RpcServer {
     void start(int port);
+    void setSerializer(Serializer serializer);
 }

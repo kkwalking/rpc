@@ -5,6 +5,8 @@ import top.zzk.rpc.api.HelloObject;
 import top.zzk.rpc.api.HelloService;
 import top.zzk.rpc.client.RpcClient;
 import top.zzk.rpc.client.raw.RpcClientProxy;
+import top.zzk.rpc.common.serializer.HessianSerializer;
+import top.zzk.rpc.common.serializer.Serializer;
 
 /**
  * @author zzk
@@ -21,6 +23,7 @@ public class NettyClientBootstrap {
         String ip = args[0];
         int port = Integer.parseInt(args[1]);
         RpcClient client = new NettyClient(ip, port);
+        client.setSerializer(Serializer.getByCode(Serializer.HESSIAN_SERIALIZER));
         RpcClientProxy rpcClientProxy = new RpcClientProxy(client);
 
         System.out.println("-----------------------------------------");

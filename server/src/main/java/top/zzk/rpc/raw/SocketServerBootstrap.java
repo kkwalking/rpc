@@ -5,6 +5,7 @@ import top.zzk.rpc.api.EchoService;
 import top.zzk.rpc.api.HelloService;
 import top.zzk.rpc.common.registry.DefaultServiceRegistry;
 import top.zzk.rpc.common.registry.ServiceRegistry;
+import top.zzk.rpc.common.serializer.HessianSerializer;
 import top.zzk.rpc.serviceImpl.EchoServiceImpl;
 import top.zzk.rpc.serviceImpl.HelloServiceImpl;
 
@@ -28,7 +29,9 @@ public class SocketServerBootstrap {
         registry.register(helloService);
         EchoService echoService = new EchoServiceImpl();
         registry.register(echoService);
+        //初始化server并分配一个序列化器给它
         RpcServer server = new SocketServer(registry);
+        server.setSerializer(new HessianSerializer());
         server.start(port);
     }
 }

@@ -1,6 +1,7 @@
 package top.zzk.rpc.client;
 
 import top.zzk.rpc.common.entity.RpcRequest;
+import top.zzk.rpc.common.serializer.Serializer;
 
 /**
  * @author zzk
@@ -9,4 +10,5 @@ import top.zzk.rpc.common.entity.RpcRequest;
  */
 public interface RpcClient {
     Object sendRequest(RpcRequest rpcRequest);
+    void setSerializer(Serializer serializer);
 }

@@ -14,8 +14,8 @@ import top.zzk.rpc.common.serializer.Serializer;
  *              包格式: 
  *                  magicCode :  4 bytes
  *                  packageType: 4 bytes
- *                  serializer:  4 bytes
- *                  length:      object's length
+ *                  serializerCode:  4 bytes
+ *                  length:      4 bytes
  *                  object:      bytes of the serialized object
  */
 
