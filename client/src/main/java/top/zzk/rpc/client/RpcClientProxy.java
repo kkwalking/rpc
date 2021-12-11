@@ -1,13 +1,13 @@
-package top.zzk.rpc.client.raw;
+package top.zzk.rpc.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.zzk.rpc.client.RpcClient;
 import top.zzk.rpc.common.entity.RpcRequest;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.UUID;
 
 /**
  * @author zzk
@@ -25,7 +25,7 @@ public class RpcClientProxy implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 //        logger.info("调用方法:{}#{}", method.getDeclaringClass().getCanonicalName(), method.getName());
-        RpcRequest request = new RpcRequest(method.getDeclaringClass().getName(),
+        RpcRequest request = new RpcRequest(UUID.randomUUID().toString(),method.getDeclaringClass().getName(),
                 method.getName(), args, method.getParameterTypes());
 
         //返回整个响应

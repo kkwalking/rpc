@@ -11,6 +11,7 @@ import top.zzk.rpc.common.enumeration.RpcError;
 import top.zzk.rpc.common.enumeration.RpcResponseCode;
 import top.zzk.rpc.common.exception.RpcException;
 import top.zzk.rpc.common.serializer.Serializer;
+import top.zzk.rpc.common.utils.MessageChecker;
 import top.zzk.rpc.common.utils.ObjectReader;
 import top.zzk.rpc.common.utils.ObjectWriter;
 
@@ -44,16 +45,8 @@ public class SocketClient implements RpcClient {
             OutputStream outputStream = socket.getOutputStream();
             InputStream inputStream = socket.getInputStream();
             ObjectWriter.writeObject(outputStream, rpcRequest, serializer);
-            RpcResponse response = (RpcResponse) ObjectReader.readObject(inputStream); 
-            if (response == null) {
-                log.error("服务调用失败,service:{}", rpcRequest.getInterfaceName());
-                throw new RpcException(RpcError.SERVICE_INVOCATION_FAILURE,
-                        "service:" + rpcRequest.getInterfaceName());
-            }
-            if (response.getStatusCode() == null || response.getStatusCode() != RpcResponseCode.SUCCESS.getCode()) {
-                log.error("服务调用失败，service:{}, response:{}", rpcRequest.getInterfaceName(),
-                        response);
-            }
+            RpcResponse response = (RpcResponse) ObjectReader.readObject(inputStream);
+            MessageChecker.check(rpcRequest,response);
             return response.getData();
         } catch (IOException e) {
             log.error("调用时发生错误：");

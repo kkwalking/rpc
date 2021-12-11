@@ -5,7 +5,7 @@ import top.zzk.rpc.api.EchoService;
 import top.zzk.rpc.api.HelloObject;
 import top.zzk.rpc.api.HelloService;
 import top.zzk.rpc.client.RpcClient;
-import top.zzk.rpc.common.serializer.HessianSerializer;
+import top.zzk.rpc.client.RpcClientProxy;
 import top.zzk.rpc.common.serializer.JsonSerializer;
 
 /**

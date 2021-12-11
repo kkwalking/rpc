@@ -19,6 +19,11 @@ public class RpcRequest implements Serializable {
     public RpcRequest() {}
 
     /**
+     * 请求号
+     */
+    private String requestId;
+
+    /**
      * 待调用接口
      */
     private String interfaceName;

@@ -18,6 +18,7 @@ import top.zzk.rpc.common.serializer.HessianSerializer;
 import top.zzk.rpc.common.serializer.JsonSerializer;
 import top.zzk.rpc.common.serializer.KryoSerializer;
 import top.zzk.rpc.common.serializer.Serializer;
+import top.zzk.rpc.common.utils.MessageChecker;
 
 /**
  * @author zzk
@@ -74,9 +75,9 @@ public class NettyClient implements RpcClient {
                     }
                 });
                 channel.closeFuture().sync();
-                AttributeKey<RpcResponse> key = AttributeKey.valueOf("rpcResponse");
+                AttributeKey<RpcResponse> key = AttributeKey.valueOf("rpcResponse"+rpcRequest.getRequestId());
                 RpcResponse rpcResponse = channel.attr(key).get();
-                channel.closeFuture().sync();
+                MessageChecker.check(rpcRequest, rpcResponse);
                 return rpcResponse.getData();
             }
         } catch (InterruptedException e) {

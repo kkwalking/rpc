@@ -4,7 +4,7 @@ import top.zzk.rpc.api.HelloObject;
 import top.zzk.rpc.api.HelloService;
 import top.zzk.rpc.client.RpcClient;
 import top.zzk.rpc.client.netty.NettyClient;
-import top.zzk.rpc.client.raw.RpcClientProxy;
+import top.zzk.rpc.client.RpcClientProxy;
 
 /**
  * @author zzk

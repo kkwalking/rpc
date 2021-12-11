@@ -19,7 +19,8 @@ public enum RpcError {
     UNKNOWN_PACKAGE_TYPE("不识别的数据包类型"),
     SERIALIZER_UNDEFINED("序列化器未定义"),
     ENCODING_ERROR("编码协议包时发生错误"),
-    DECODING_ERROR("解码协议包时发生错误")
+    DECODING_ERROR("解码协议包时发生错误"),
+    RESPONSE_NOT_MATCH("响应与请求号不匹配")
     ;
     private final String errorMessage;
     

@@ -13,6 +13,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.util.UUID;
 
 /**
  * @author zzk
@@ -90,7 +91,7 @@ public class SocketClientTest {
             RpcRequest rpcRequest = (RpcRequest) objectInputStream.readObject();
             log.info("请求服务:{},请求方法{}", rpcRequest.getInterfaceName(), rpcRequest.getMethodName());
             HelloObject result = new HelloObject(1, "hello zzk");
-            objectOutputStream.writeObject(RpcResponse.success(result));
+            objectOutputStream.writeObject(RpcResponse.success(result,rpcRequest.getRequestId()));
             objectOutputStream.flush();
         } catch (IOException | ClassNotFoundException e) {
             log.error("调用或发送时有错误发生：", e);
@@ -99,7 +100,7 @@ public class SocketClientTest {
 
     @Test
     public void ObjectClient() {
-        RpcRequest rpcRequest = new RpcRequest("HelloService", "hello",
+        RpcRequest rpcRequest = new RpcRequest(UUID.randomUUID().toString(),"HelloService", "hello",
                 new Object[]{"zzk"}, new Class[]{String.class});
         String host = "127.0.0.1";
         int port = 9090;
