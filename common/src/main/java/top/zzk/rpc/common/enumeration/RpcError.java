@@ -20,7 +20,8 @@ public enum RpcError {
     SERIALIZER_UNDEFINED("序列化器未定义"),
     ENCODING_ERROR("编码协议包时发生错误"),
     DECODING_ERROR("解码协议包时发生错误"),
-    RESPONSE_NOT_MATCH("响应与请求号不匹配")
+    RESPONSE_NOT_MATCH("响应与请求号不匹配"),
+    FAIL_CONNECT_SERVER("连接服务端失败")
     ;
     private final String errorMessage;
     

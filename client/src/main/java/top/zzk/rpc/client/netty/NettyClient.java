@@ -20,6 +20,9 @@ import top.zzk.rpc.common.serializer.KryoSerializer;
 import top.zzk.rpc.common.serializer.Serializer;
 import top.zzk.rpc.common.utils.MessageChecker;
 
+import java.net.InetSocketAddress;
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * @author zzk
  * @date 2021/12/8
@@ -53,20 +56,10 @@ public class NettyClient implements RpcClient {
             log.error("序列化器未初始化");
             throw new RpcException(RpcError.SERIALIZER_UNDEFINED);
         }
-        bootstrap.handler(new ChannelInitializer<SocketChannel>() {
-            @Override
-            protected void initChannel(SocketChannel socketChannel) throws Exception {
-                ChannelPipeline pipeline = socketChannel.pipeline();
-                pipeline.addLast(new CommonDecoder())
-                        .addLast(new CommonEncoder(serializer))
-                        .addLast(new NettyClientHandler());
-            }
-        });
+        AtomicReference<Object> result = new AtomicReference<>(null);
         try {
-            ChannelFuture future = bootstrap.connect(host, port).sync();
-            
-            Channel channel = future.channel();
-            if (channel != null) {
+            Channel channel = ChannnelProvider.getChannel(new InetSocketAddress(host, port),serializer);
+            if (channel.isActive()) {
                 channel.writeAndFlush(rpcRequest).addListener( future1 -> {
                     if (future1.isSuccess()) {
                         log.info("客户端成功发送消息：{}", rpcRequest.toString());
@@ -78,13 +71,15 @@ public class NettyClient implements RpcClient {
                 AttributeKey<RpcResponse> key = AttributeKey.valueOf("rpcResponse"+rpcRequest.getRequestId());
                 RpcResponse rpcResponse = channel.attr(key).get();
                 MessageChecker.check(rpcRequest, rpcResponse);
-                return rpcResponse.getData();
+                result.set(rpcResponse.getData());
+            } else {
+                System.exit(0);
             }
         } catch (InterruptedException e) {
             log.error("发送消息时有错误发生：", e);
 
         } 
-        return null;
+        return result.get();
     }
 
     @Override
