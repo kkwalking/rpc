@@ -32,7 +32,7 @@ public class NettyServerBootstrap {
         registry.register(echoService);
         
         RpcServer server = new NettyServer(registry);
-        server.setSerializer(Serializer.getByCode(Serializer.KRYO_SERIALIZER));
+        server.setSerializer(Serializer.getByCode(Serializer.PROTOBUF));
         server.start(port);
     }
 }

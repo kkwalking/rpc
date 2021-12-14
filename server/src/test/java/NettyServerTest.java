@@ -4,6 +4,7 @@ import top.zzk.rpc.api.EchoService;
 import top.zzk.rpc.api.HelloService;
 import top.zzk.rpc.common.registry.DefaultServiceRegistry;
 import top.zzk.rpc.common.registry.ServiceRegistry;
+import top.zzk.rpc.common.serializer.ProtobufSerializer;
 import top.zzk.rpc.netty.NettyServer;
 import top.zzk.rpc.serviceImpl.EchoServiceImpl;
 import top.zzk.rpc.serviceImpl.HelloServiceImpl;
@@ -27,6 +28,7 @@ public class NettyServerTest {
         EchoService echoService = new EchoServiceImpl();
         registry.register(echoService);
         RpcServer server = new NettyServer(registry);
+        server.setSerializer(new ProtobufSerializer());
         server.start(9999);
     }
 }

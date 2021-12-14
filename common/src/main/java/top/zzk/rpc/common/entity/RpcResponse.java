@@ -1,6 +1,7 @@
 package top.zzk.rpc.common.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import top.zzk.rpc.common.enumeration.RpcResponseCode;
 
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.io.Serializable;
  * description  RPC响应封装包
  */
 @Data
+@NoArgsConstructor
 public class RpcResponse<T> implements Serializable {
 
     /**

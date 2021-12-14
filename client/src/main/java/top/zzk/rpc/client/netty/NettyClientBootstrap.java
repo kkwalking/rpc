@@ -22,7 +22,7 @@ public class NettyClientBootstrap {
         String ip = args[0];
         int port = Integer.parseInt(args[1]);
         RpcClient client = new NettyClient(ip, port);
-        client.setSerializer(Serializer.getByCode(Serializer.HESSIAN_SERIALIZER));
+        client.setSerializer(Serializer.getByCode(Serializer.PROTOBUF));
         RpcClientProxy rpcClientProxy = new RpcClientProxy(client);
 
         System.out.println("-----------------------------------------");

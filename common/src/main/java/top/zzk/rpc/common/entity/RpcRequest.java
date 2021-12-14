@@ -14,9 +14,8 @@ import java.io.Serializable;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class RpcRequest implements Serializable {
-
-    public RpcRequest() {}
 
     /**
      * 请求号
