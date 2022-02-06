@@ -28,6 +28,6 @@ public class NettyServerTest {
         
         server.publishService(helloService, HelloService.class);
         server.publishService(echoService, EchoService.class);
-        
+        server.start();
     }
 }

@@ -1,17 +1,13 @@
 package top.zzk.rpc.client.raw;
 
-import com.esotericsoftware.kryo.io.Output;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import top.zzk.rpc.client.RpcClient;
+import top.zzk.rpc.common.discovery.NacosServiceDiscovery;
+import top.zzk.rpc.common.discovery.ServiceDiscovery;
 import top.zzk.rpc.common.entity.RpcRequest;
 import top.zzk.rpc.common.entity.RpcResponse;
 import top.zzk.rpc.common.enumeration.RpcError;
-import top.zzk.rpc.common.enumeration.RpcResponseCode;
 import top.zzk.rpc.common.exception.RpcException;
-import top.zzk.rpc.common.registry.NacosServiceRegistry;
-import top.zzk.rpc.common.registry.ServiceRegistry;
 import top.zzk.rpc.common.serializer.Serializer;
 import top.zzk.rpc.common.utils.MessageChecker;
 import top.zzk.rpc.common.utils.ObjectReader;
@@ -31,11 +27,11 @@ public class SocketClient implements RpcClient {
     
     private Serializer serializer;
     
-    private final ServiceRegistry registry;
+    private final ServiceDiscovery discovery;
 
     public SocketClient() {
-        //todo 目前这里的注册中心是 Nacos, 并且是写死在这里的
-        this.registry = new NacosServiceRegistry();
+        //todo 目前这里的服务发现是 Nacos, 并且是写死在这里的
+        this.discovery = new NacosServiceDiscovery();
     }
 
     @Override
@@ -44,7 +40,7 @@ public class SocketClient implements RpcClient {
             log.error("序列化器未初始化");
             throw new RpcException(RpcError.SERIALIZER_UNDEFINED);
         }
-        InetSocketAddress inetSocketAddress = registry.lookupService(rpcRequest.getInterfaceName());
+        InetSocketAddress inetSocketAddress = discovery.lookupService(rpcRequest.getInterfaceName());
         try (Socket socket = new Socket()) {
             socket.connect(inetSocketAddress);
             OutputStream outputStream = socket.getOutputStream();

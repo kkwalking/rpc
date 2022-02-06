@@ -1,5 +1,4 @@
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
 import org.junit.Test;
 import top.zzk.rpc.api.HelloObject;
 import top.zzk.rpc.api.HelloService;
@@ -144,5 +143,4 @@ public class SocketClientTest {
         String hello = proxy1.hello(helloObject);
         System.out.println(hello);
     }
-
 }

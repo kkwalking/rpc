@@ -44,12 +44,12 @@ public class NettyServer implements RpcServer {
     }
 
     @Override
-    public <T> void publishService(Object service, Class<T> serviceClass) {
+    public <T> void publishService(T service, Class<T> serviceClass) {
         if (serializer == null) {
             log.error("序列化器未初始化");
             throw new RpcException(RpcError.SERIALIZER_UNDEFINED);
         }
-        serviceProvider.addServiceProvider(service);
+        serviceProvider.addServiceProvider(service, serviceClass);
         registry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
         
     }

@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import top.zzk.rpc.client.RpcClient;
 import top.zzk.rpc.common.codec.CommonDecoder;
 import top.zzk.rpc.common.codec.CommonEncoder;
+import top.zzk.rpc.common.discovery.NacosServiceDiscovery;
+import top.zzk.rpc.common.discovery.ServiceDiscovery;
 import top.zzk.rpc.common.entity.RpcRequest;
 import top.zzk.rpc.common.entity.RpcResponse;
 import top.zzk.rpc.common.enumeration.RpcError;
@@ -35,10 +37,9 @@ public class NettyClient implements RpcClient {
     private static final Bootstrap bootstrap;
     private static final NioEventLoopGroup eventExecutors;
     private Serializer serializer;
-    private final ServiceRegistry serviceRegistry;
-
+    private final ServiceDiscovery discovery;
     public NettyClient() {
-        this.serviceRegistry = new NacosServiceRegistry();
+        this.discovery = new NacosServiceDiscovery();
     }
 
     static {
@@ -58,7 +59,7 @@ public class NettyClient implements RpcClient {
         }
         AtomicReference<Object> result = new AtomicReference<>(null);
         try {
-            InetSocketAddress inetSocketAddress = serviceRegistry.lookupService(rpcRequest.getInterfaceName());
+            InetSocketAddress inetSocketAddress = discovery.lookupService(rpcRequest.getInterfaceName());
             Channel channel = ChannnelProvider.getChannel(inetSocketAddress,serializer);
             if (channel.isActive()) {
                 channel.writeAndFlush(rpcRequest).addListener( future1 -> {
