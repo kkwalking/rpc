@@ -13,11 +13,13 @@ import top.zzk.rpc.common.codec.CommonDecoder;
 import top.zzk.rpc.common.codec.CommonEncoder;
 import top.zzk.rpc.common.enumeration.RpcError;
 import top.zzk.rpc.common.exception.RpcException;
+import top.zzk.rpc.common.registry.NacosServiceRegistry;
 import top.zzk.rpc.common.registry.ServiceRegistry;
-import top.zzk.rpc.common.serializer.HessianSerializer;
-import top.zzk.rpc.common.serializer.JsonSerializer;
-import top.zzk.rpc.common.serializer.KryoSerializer;
 import top.zzk.rpc.common.serializer.Serializer;
+import top.zzk.rpc.serviceprovider.ServiceProvider;
+import top.zzk.rpc.serviceprovider.ServiceProviderImpl;
+
+import java.net.InetSocketAddress;
 
 /**
  * @author zzk
@@ -26,20 +28,34 @@ import top.zzk.rpc.common.serializer.Serializer;
  */
 @Slf4j
 public class NettyServer implements RpcServer {
-    
-    private ServiceRegistry registry;
+
+    private final String host;
+    private final int port;
+    private final ServiceProvider serviceProvider;
+
+    private final ServiceRegistry registry;
     private Serializer serializer;
 
-    public NettyServer(ServiceRegistry registry) {
-        this.registry = registry;
+    public NettyServer(String host, int port) {
+        this.host = host;
+        this.port = port;
+        serviceProvider = new ServiceProviderImpl();
+        registry = new NacosServiceRegistry();
     }
 
     @Override
-    public void start(int port) {
+    public <T> void publishService(Object service, Class<T> serviceClass) {
         if (serializer == null) {
             log.error("序列化器未初始化");
             throw new RpcException(RpcError.SERIALIZER_UNDEFINED);
         }
+        serviceProvider.addServiceProvider(service);
+        registry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
+        
+    }
+
+    @Override
+    public void start() {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workGroup = new NioEventLoopGroup();
         try {
@@ -56,7 +72,7 @@ public class NettyServer implements RpcServer {
                             ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast(new CommonEncoder(serializer));
                             pipeline.addLast(new CommonDecoder());
-                            pipeline.addLast(new NettyServerHandler(registry));
+                            pipeline.addLast(new NettyServerHandler());
                         }
                     });
             ChannelFuture future = serverBootstrap.bind(port).sync();
@@ -74,4 +90,6 @@ public class NettyServer implements RpcServer {
     public void setSerializer(Serializer serializer) {
         this.serializer = serializer;
     }
+
+
 }

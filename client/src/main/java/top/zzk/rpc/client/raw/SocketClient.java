@@ -10,12 +10,15 @@ import top.zzk.rpc.common.entity.RpcResponse;
 import top.zzk.rpc.common.enumeration.RpcError;
 import top.zzk.rpc.common.enumeration.RpcResponseCode;
 import top.zzk.rpc.common.exception.RpcException;
+import top.zzk.rpc.common.registry.NacosServiceRegistry;
+import top.zzk.rpc.common.registry.ServiceRegistry;
 import top.zzk.rpc.common.serializer.Serializer;
 import top.zzk.rpc.common.utils.MessageChecker;
 import top.zzk.rpc.common.utils.ObjectReader;
 import top.zzk.rpc.common.utils.ObjectWriter;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 /**
@@ -26,13 +29,13 @@ import java.net.Socket;
 @Slf4j
 public class SocketClient implements RpcClient {
     
-    private final String host;
-    private final int port;
     private Serializer serializer;
+    
+    private final ServiceRegistry registry;
 
-    public SocketClient(String host, int port) {
-        this.host = host;
-        this.port = port;
+    public SocketClient() {
+        //todo 目前这里的注册中心是 Nacos, 并且是写死在这里的
+        this.registry = new NacosServiceRegistry();
     }
 
     @Override
@@ -41,7 +44,9 @@ public class SocketClient implements RpcClient {
             log.error("序列化器未初始化");
             throw new RpcException(RpcError.SERIALIZER_UNDEFINED);
         }
-        try (Socket socket = new Socket(this.host, this.port)) {
+        InetSocketAddress inetSocketAddress = registry.lookupService(rpcRequest.getInterfaceName());
+        try (Socket socket = new Socket()) {
+            socket.connect(inetSocketAddress);
             OutputStream outputStream = socket.getOutputStream();
             InputStream inputStream = socket.getInputStream();
             ObjectWriter.writeObject(outputStream, rpcRequest, serializer);

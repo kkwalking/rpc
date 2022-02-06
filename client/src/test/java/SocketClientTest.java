@@ -2,11 +2,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import top.zzk.rpc.api.HelloObject;
+import top.zzk.rpc.api.HelloService;
+import top.zzk.rpc.client.RpcClient;
+import top.zzk.rpc.client.RpcClientProxy;
+import top.zzk.rpc.client.raw.SocketClient;
 import top.zzk.rpc.common.entity.RpcRequest;
 import top.zzk.rpc.common.entity.RpcResponse;
 import top.zzk.rpc.common.enumeration.RpcError;
 import top.zzk.rpc.common.enumeration.RpcResponseCode;
 import top.zzk.rpc.common.exception.RpcException;
+import top.zzk.rpc.common.serializer.Serializer;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -129,6 +134,15 @@ public class SocketClientTest {
             log.error("调用时发生错误：");
         }
     }
-
+    @Test
+    public void bootTest() {
+        RpcClient client = new SocketClient();
+        HelloObject helloObject = new HelloObject(1, "test socket client from test framework");
+        client.setSerializer(Serializer.getByCode(Serializer.PROTOBUF));
+        RpcClientProxy proxy = new RpcClientProxy(client);
+        HelloService proxy1 = proxy.getProxy(HelloService.class);
+        String hello = proxy1.hello(helloObject);
+        System.out.println(hello);
+    }
 
 }

@@ -5,6 +5,8 @@ import top.zzk.rpc.api.HelloService;
 import top.zzk.rpc.client.RpcClient;
 import top.zzk.rpc.client.netty.NettyClient;
 import top.zzk.rpc.client.RpcClientProxy;
+import top.zzk.rpc.common.registry.NacosServiceRegistry;
+import top.zzk.rpc.common.registry.ServiceRegistry;
 import top.zzk.rpc.common.serializer.ProtobufSerializer;
 import top.zzk.rpc.common.serializer.Serializer;
 
@@ -16,7 +18,7 @@ import top.zzk.rpc.common.serializer.Serializer;
 public class NettyClientTest {
     @Test
     public void bootstrap() {
-        RpcClient client = new NettyClient("127.0.0.1", 9999);
+        RpcClient client = new NettyClient();
         client.setSerializer(Serializer.getByCode(Serializer.PROTOBUF));
         RpcClientProxy rpcClientProxy = new RpcClientProxy(client);
 
@@ -27,7 +29,7 @@ public class NettyClientTest {
         System.out.println(res);
         System.out.println("-----------------------------------------");
         EchoService echoService = rpcClientProxy.getProxy(EchoService.class);
-        res = echoService.echo("test echoService by netty way");
+        res = echoService.echo("test echoService from netty client");
         System.out.println(res);
         System.out.println("-----------------------------------------");
     }

@@ -7,6 +7,9 @@ import top.zzk.rpc.RequestHandler;
 import top.zzk.rpc.common.entity.RpcRequest;
 import top.zzk.rpc.common.entity.RpcResponse;
 import top.zzk.rpc.common.registry.ServiceRegistry;
+import top.zzk.rpc.common.utils.ThreadPoolFactory;
+
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author zzk
@@ -16,24 +19,21 @@ import top.zzk.rpc.common.registry.ServiceRegistry;
 @Slf4j
 public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
     
-    private final ServiceRegistry registry;
-
-    public NettyServerHandler(ServiceRegistry registry) {
-        this.registry = registry;
-    }
+    private static final ExecutorService threadPool = ThreadPoolFactory.createDefaultThreadPool("netty-server-handler");
+    
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcRequest msg) throws Exception {
-        try {
-            log.info("服务器接收到请求:{}", msg);
-            String serviceName = msg.getInterfaceName();
-            Object service = registry.getService(serviceName);
-            Object result = RequestHandler.handle(msg, service);
-            ChannelFuture future = ctx.writeAndFlush(RpcResponse.success(result,msg.getRequestId()));
-            future.addListener(ChannelFutureListener.CLOSE);
-        } finally {
-            ReferenceCountUtil.release(msg);
-        }
+        threadPool.execute( () -> {
+            try {
+                log.info("服务器接收到请求:{}", msg);
+                Object result = RequestHandler.handle(msg);
+                ChannelFuture future = ctx.writeAndFlush(RpcResponse.success(result,msg.getRequestId()));
+                future.addListener(ChannelFutureListener.CLOSE);
+            } finally {
+                ReferenceCountUtil.release(msg);
+            }
+        });
     }
 
     @Override

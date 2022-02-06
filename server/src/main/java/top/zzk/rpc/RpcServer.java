@@ -8,6 +8,8 @@ import top.zzk.rpc.common.serializer.Serializer;
  * description  RPC服务器接口抽象
  */
 public interface RpcServer {
-    void start(int port);
+    void start();
     void setSerializer(Serializer serializer);
+    
+    <T> void publishService(Object service, Class<T> serviceClass);
 }

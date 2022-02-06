@@ -14,6 +14,8 @@ import top.zzk.rpc.common.entity.RpcRequest;
 import top.zzk.rpc.common.entity.RpcResponse;
 import top.zzk.rpc.common.enumeration.RpcError;
 import top.zzk.rpc.common.exception.RpcException;
+import top.zzk.rpc.common.registry.NacosServiceRegistry;
+import top.zzk.rpc.common.registry.ServiceRegistry;
 import top.zzk.rpc.common.serializer.HessianSerializer;
 import top.zzk.rpc.common.serializer.JsonSerializer;
 import top.zzk.rpc.common.serializer.KryoSerializer;
@@ -30,17 +32,15 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Slf4j
 public class NettyClient implements RpcClient {
-    private String host;
-    private int port;
     private static final Bootstrap bootstrap;
     private static final NioEventLoopGroup eventExecutors;
     private Serializer serializer;
+    private final ServiceRegistry serviceRegistry;
 
-    public NettyClient(String host, int port) {
-        this.host = host;
-        this.port = port;
+    public NettyClient() {
+        this.serviceRegistry = new NacosServiceRegistry();
     }
-    
+
     static {
         eventExecutors = new NioEventLoopGroup();
         bootstrap = new Bootstrap();
@@ -58,7 +58,8 @@ public class NettyClient implements RpcClient {
         }
         AtomicReference<Object> result = new AtomicReference<>(null);
         try {
-            Channel channel = ChannnelProvider.getChannel(new InetSocketAddress(host, port),serializer);
+            InetSocketAddress inetSocketAddress = serviceRegistry.lookupService(rpcRequest.getInterfaceName());
+            Channel channel = ChannnelProvider.getChannel(inetSocketAddress,serializer);
             if (channel.isActive()) {
                 channel.writeAndFlush(rpcRequest).addListener( future1 -> {
                     if (future1.isSuccess()) {

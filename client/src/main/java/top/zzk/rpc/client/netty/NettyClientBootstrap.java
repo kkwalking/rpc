@@ -5,6 +5,7 @@ import top.zzk.rpc.api.HelloObject;
 import top.zzk.rpc.api.HelloService;
 import top.zzk.rpc.client.RpcClient;
 import top.zzk.rpc.client.RpcClientProxy;
+import top.zzk.rpc.common.registry.NacosServiceRegistry;
 import top.zzk.rpc.common.serializer.Serializer;
 
 /**
@@ -14,14 +15,7 @@ import top.zzk.rpc.common.serializer.Serializer;
  */
 public class NettyClientBootstrap {
     public static void main(String[] args) {
-        if(args.length !=2) {
-            System.out.println("The Specific IP address and port is required");
-            System.out.println("Usage: RpcClientBootstrap <IP> <Port>");
-            return;
-        }
-        String ip = args[0];
-        int port = Integer.parseInt(args[1]);
-        RpcClient client = new NettyClient(ip, port);
+        RpcClient client = new NettyClient();
         client.setSerializer(Serializer.getByCode(Serializer.PROTOBUF));
         RpcClientProxy rpcClientProxy = new RpcClientProxy(client);
 

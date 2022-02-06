@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import top.zzk.rpc.common.entity.RpcRequest;
 import top.zzk.rpc.common.entity.RpcResponse;
 import top.zzk.rpc.common.enumeration.RpcResponseCode;
+import top.zzk.rpc.serviceprovider.ServiceProvider;
+import top.zzk.rpc.serviceprovider.ServiceProviderImpl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -17,9 +19,12 @@ import java.lang.reflect.Method;
 public class RequestHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private static final ServiceProvider serviceProvider = new ServiceProviderImpl();
+    
 
-    public static Object handle(RpcRequest rpcRequest, Object service) {
+    public static Object handle(RpcRequest rpcRequest) {
         Object result = null;
+        Object service = serviceProvider.getServiceProvider(rpcRequest.getInterfaceName());
         try {
             result = RequestHandler.invokeMethod(rpcRequest, service);
             logger.info("服务:{} 成功调用{} 方法", rpcRequest.getInterfaceName(), rpcRequest.getMethodName());

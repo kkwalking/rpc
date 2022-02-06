@@ -21,7 +21,9 @@ public enum RpcError {
     ENCODING_ERROR("编码协议包时发生错误"),
     DECODING_ERROR("解码协议包时发生错误"),
     RESPONSE_NOT_MATCH("响应与请求号不匹配"),
-    FAIL_CONNECT_SERVER("连接服务端失败")
+    FAIL_CONNECT_SERVER("连接服务端失败"),
+    FAILED_TO_CONNECT_TO_SERVICE_REGISTRY("连接注册中心失败"),
+    REGISTER_SERVICE_FAILED("注册服务失败")
     ;
     private final String errorMessage;
     

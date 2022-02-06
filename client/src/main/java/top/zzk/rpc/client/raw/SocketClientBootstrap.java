@@ -19,15 +19,9 @@ public class SocketClientBootstrap {
         usage: RpcClientBootstrap <ip> <port>
      */
     public static void main(String[] args) {
-        if(args.length !=2) {
-            System.out.println("A Specific IP address and port is required");
-            System.out.println("Usage: RpcClientBootstrap <IP> <Port>");
-            return;
-        }
-        String ip = args[0];
-        int port = Integer.parseInt(args[1]);
+
         //初始化一个客户端并分配一个序列化器给它
-        RpcClient socketClient = new SocketClient(ip,port);
+        RpcClient socketClient = new SocketClient();
         socketClient.setSerializer(new ProtobufSerializer());
         
         RpcClientProxy proxy = new RpcClientProxy(socketClient);
