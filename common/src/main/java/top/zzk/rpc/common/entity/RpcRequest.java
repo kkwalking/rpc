@@ -36,4 +36,8 @@ public class RpcRequest implements Serializable {
     private Object[] params;
     /* 调用参数类型列表*/
     private Class<?>[] paramTypes;
+    /**
+     * 是否是心跳包
+     */
+    private Boolean heartBeat;
 }

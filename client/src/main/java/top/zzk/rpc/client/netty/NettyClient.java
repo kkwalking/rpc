@@ -3,24 +3,16 @@ package top.zzk.rpc.client.netty;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
 import top.zzk.rpc.client.RpcClient;
-import top.zzk.rpc.common.codec.CommonDecoder;
-import top.zzk.rpc.common.codec.CommonEncoder;
 import top.zzk.rpc.common.discovery.NacosServiceDiscovery;
 import top.zzk.rpc.common.discovery.ServiceDiscovery;
 import top.zzk.rpc.common.entity.RpcRequest;
 import top.zzk.rpc.common.entity.RpcResponse;
 import top.zzk.rpc.common.enumeration.RpcError;
 import top.zzk.rpc.common.exception.RpcException;
-import top.zzk.rpc.common.registry.NacosServiceRegistry;
-import top.zzk.rpc.common.registry.ServiceRegistry;
-import top.zzk.rpc.common.serializer.HessianSerializer;
-import top.zzk.rpc.common.serializer.JsonSerializer;
-import top.zzk.rpc.common.serializer.KryoSerializer;
 import top.zzk.rpc.common.serializer.Serializer;
 import top.zzk.rpc.common.utils.MessageChecker;
 
@@ -65,7 +57,7 @@ public class NettyClient implements RpcClient {
         AtomicReference<Object> result = new AtomicReference<>(null);
         try {
             InetSocketAddress inetSocketAddress = discovery.lookupService(rpcRequest.getInterfaceName());
-            Channel channel = ChannnelProvider.getChannel(inetSocketAddress, serializer);
+            Channel channel = ChannelProvider.getChannel(inetSocketAddress, serializer);
             if (!channel.isActive()) {
                 group.shutdownGracefully();
                 return null;

@@ -11,6 +11,8 @@ public interface Serializer {
     int JSON_SERIALIZER = 1;
     int HESSIAN_SERIALIZER = 2;
     int PROTOBUF_SERIALIZER = 3;
+    
+    int DEFALUT_SERIALIZER = 0;
     byte[] serialize(Object obj);
 
     Object deserialize(byte[] bytes, Class<?> clazz);

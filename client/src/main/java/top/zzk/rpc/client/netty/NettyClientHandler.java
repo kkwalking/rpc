@@ -1,11 +1,20 @@
 package top.zzk.rpc.client.netty;
 
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.AttributeKey;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
+import top.zzk.rpc.common.entity.RpcRequest;
 import top.zzk.rpc.common.entity.RpcResponse;
+import top.zzk.rpc.common.serializer.Serializer;
+
+import java.net.InetSocketAddress;
+
 
 /**
  * @author zzk
@@ -38,5 +47,22 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<RpcResponse>
         log.error("消息处理过程中出现错误：");
         cause.printStackTrace();
         ctx.close();
+    }
+
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if(evt instanceof IdleStateEvent) {
+            IdleState state = ((IdleStateEvent) evt).state();
+            if(state == IdleState.WRITER_IDLE) {
+                log.info("发送心跳包[{}]", ctx.channel().remoteAddress());
+                Channel channel = ChannelProvider.getChannel((InetSocketAddress)ctx.channel().remoteAddress(),
+                        Serializer.getByCode(Serializer.DEFALUT_SERIALIZER));
+                RpcRequest request = new RpcRequest();
+                request.setHeartBeat(true);
+                channel.writeAndFlush(request).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+            }
+        } else {
+            super.userEventTriggered(ctx, evt);
+        }
     }
 }

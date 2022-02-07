@@ -103,7 +103,7 @@ public class SocketClientTest {
     @Test
     public void ObjectClient() {
         RpcRequest rpcRequest = new RpcRequest(UUID.randomUUID().toString(),"HelloService", "hello",
-                new Object[]{"zzk"}, new Class[]{String.class});
+                new Object[]{"zzk"}, new Class[]{String.class}, false);
         String host = "127.0.0.1";
         int port = 9090;
         try (Socket socket = new Socket(host, port)) {

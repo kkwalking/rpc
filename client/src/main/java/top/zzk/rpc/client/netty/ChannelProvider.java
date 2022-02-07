@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  * description
  */
 @Slf4j
-public class ChannnelProvider {
+public class ChannelProvider {
     private static EventLoopGroup eventLoopGroup;
     private static Bootstrap bootstrap = initializeBootstrap();
 
