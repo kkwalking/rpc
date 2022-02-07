@@ -13,10 +13,12 @@ import top.zzk.rpc.common.entity.RpcRequest;
 import top.zzk.rpc.common.entity.RpcResponse;
 import top.zzk.rpc.common.enumeration.RpcError;
 import top.zzk.rpc.common.exception.RpcException;
+import top.zzk.rpc.common.factory.SingletonFactory;
 import top.zzk.rpc.common.serializer.Serializer;
 import top.zzk.rpc.common.utils.MessageChecker;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -30,6 +32,7 @@ public class NettyClient implements RpcClient {
     private static final EventLoopGroup group;
     private final Serializer serializer;
     private final ServiceDiscovery discovery;
+    private final UnprocessedRequest unprocessedRequest;
 
     public NettyClient() {
         this(DEFAULT_SERIALIZER);
@@ -37,24 +40,19 @@ public class NettyClient implements RpcClient {
     public NettyClient(Integer serializer) {
         this.serializer = Serializer.getByCode(serializer);
         this.discovery = new NacosServiceDiscovery();
+        this.unprocessedRequest = SingletonFactory.getInstance(UnprocessedRequest.class);
     }
 
     static {
         group = new NioEventLoopGroup();
         bootstrap = new Bootstrap();
         bootstrap.group(group)
-                .channel(NioSocketChannel.class)
-                .option(ChannelOption.SO_KEEPALIVE, true);
-
+                .channel(NioSocketChannel.class);
     }
 
     @Override
-    public Object sendRequest(RpcRequest rpcRequest) {
-        if (this.serializer == null) {
-            log.error("序列化器未初始化");
-            throw new RpcException(RpcError.SERIALIZER_UNDEFINED);
-        }
-        AtomicReference<Object> result = new AtomicReference<>(null);
+    public CompletableFuture<RpcResponse> sendRequest(RpcRequest rpcRequest) {
+        CompletableFuture<RpcResponse> resultFuture = new CompletableFuture<>();
         try {
             InetSocketAddress inetSocketAddress = discovery.lookupService(rpcRequest.getInterfaceName());
             Channel channel = ChannelProvider.getChannel(inetSocketAddress, serializer);
@@ -62,23 +60,22 @@ public class NettyClient implements RpcClient {
                 group.shutdownGracefully();
                 return null;
             }
-            channel.writeAndFlush(rpcRequest).addListener(future1 -> {
+            unprocessedRequest.put(rpcRequest.getRequestId(), resultFuture);
+            channel.writeAndFlush(rpcRequest).addListener((ChannelFutureListener)future1 -> {
                 if (future1.isSuccess()) {
                     log.info("客户端成功发送消息：{}", rpcRequest.toString());
                 } else {
+                    future1.channel().close();
+                    resultFuture.completeExceptionally(future1.cause());
                     log.error("发送消息时发生错误:", future1.cause());
                 }
             });
-            channel.closeFuture().sync();
-            AttributeKey<RpcResponse> key = AttributeKey.valueOf("rpcResponse" + rpcRequest.getRequestId());
-            RpcResponse rpcResponse = channel.attr(key).get();
-            MessageChecker.check(rpcRequest, rpcResponse);
-            result.set(rpcResponse.getData());
         } catch (InterruptedException e) {
+            unprocessedRequest.remove(rpcRequest.getRequestId());
             log.error("发送消息时有错误发生：", e);
             Thread.currentThread().interrupt();
         }
-        return result.get();
+        return resultFuture;
     }
 
 }

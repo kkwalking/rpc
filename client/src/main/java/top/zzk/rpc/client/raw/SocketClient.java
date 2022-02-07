@@ -53,7 +53,7 @@ public class SocketClient implements RpcClient {
             ObjectWriter.writeObject(outputStream, rpcRequest, serializer);
             RpcResponse response = (RpcResponse) ObjectReader.readObject(inputStream);
             MessageChecker.check(rpcRequest,response);
-            return response.getData();
+            return response;
         } catch (IOException e) {
             log.error("调用时发生错误：");
             throw new RpcException("服务调用失败：", e);

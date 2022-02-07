@@ -11,6 +11,7 @@ import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 import top.zzk.rpc.common.entity.RpcRequest;
 import top.zzk.rpc.common.entity.RpcResponse;
+import top.zzk.rpc.common.factory.SingletonFactory;
 import top.zzk.rpc.common.serializer.Serializer;
 
 import java.net.InetSocketAddress;
@@ -23,6 +24,11 @@ import java.net.InetSocketAddress;
  */
 @Slf4j
 public class NettyClientHandler extends SimpleChannelInboundHandler<RpcResponse> {
+    private final UnprocessedRequest unprocessedRequest;
+    
+    public NettyClientHandler() {
+        unprocessedRequest = SingletonFactory.getInstance(UnprocessedRequest.class);
+    }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -33,10 +39,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<RpcResponse>
     protected void channelRead0(ChannelHandlerContext ctx, RpcResponse msg) throws Exception {
         try {
             log.info(String.format("客户端接收到消息: %s", msg));
-            AttributeKey<RpcResponse> key = AttributeKey.valueOf("rpcResponse"+msg.getRequestId());
-            ctx.channel().attr(key).set(msg);
-//            ctx.channel().close();
-            ctx.close();
+            unprocessedRequest.complete(msg);
         } finally {
             ReferenceCountUtil.release(msg);
         }

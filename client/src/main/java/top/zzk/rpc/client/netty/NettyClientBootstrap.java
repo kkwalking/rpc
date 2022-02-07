@@ -27,6 +27,6 @@ public class NettyClientBootstrap {
         res = echoService.echo("test echoService by netty way");
         System.out.println(res);
         System.out.println("-----------------------------------------");
-        System.exit(0);
+//        System.exit(0); /* 注释这里看心跳检测效果 */
     }
 }
