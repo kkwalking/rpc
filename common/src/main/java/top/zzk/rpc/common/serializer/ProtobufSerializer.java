@@ -1,14 +1,9 @@
 package top.zzk.rpc.common.serializer;
 
 import io.protostuff.LinkedBuffer;
-import io.protostuff.ProtobufIOUtil;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
 import io.protostuff.runtime.RuntimeSchema;
-
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author zzk
@@ -47,6 +42,6 @@ public class ProtobufSerializer implements Serializer{
 
     @Override
     public int getCode() {
-        return Serializer.PROTOBUF;
+        return Serializer.PROTOBUF_SERIALIZER;
     }
 }

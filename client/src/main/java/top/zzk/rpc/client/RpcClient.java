@@ -9,6 +9,6 @@ import top.zzk.rpc.common.serializer.Serializer;
  * description   RPC客户端抽象
  */
 public interface RpcClient {
+    int DEFAULT_SERIALIZER = 0;
     Object sendRequest(RpcRequest rpcRequest);
-    void setSerializer(Serializer serializer);
 }

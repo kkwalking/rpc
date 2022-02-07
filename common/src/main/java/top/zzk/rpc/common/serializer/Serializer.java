@@ -10,7 +10,7 @@ public interface Serializer {
     int KRYO_SERIALIZER = 0;
     int JSON_SERIALIZER = 1;
     int HESSIAN_SERIALIZER = 2;
-    int PROTOBUF = 3;
+    int PROTOBUF_SERIALIZER = 3;
     byte[] serialize(Object obj);
 
     Object deserialize(byte[] bytes, Class<?> clazz);
@@ -25,7 +25,7 @@ public interface Serializer {
                 return  new KryoSerializer();
             case JSON_SERIALIZER:
                 return new JsonSerializer();
-            case PROTOBUF:
+            case PROTOBUF_SERIALIZER:
                 return new ProtobufSerializer();
             default:
                 return null;

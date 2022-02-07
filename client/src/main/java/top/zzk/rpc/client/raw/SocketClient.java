@@ -30,8 +30,13 @@ public class SocketClient implements RpcClient {
     private final ServiceDiscovery discovery;
 
     public SocketClient() {
+        this(DEFAULT_SERIALIZER);
+    }
+
+    public SocketClient(Integer serializerCode) {
         //todo 目前这里的服务发现是 Nacos, 并且是写死在这里的
         this.discovery = new NacosServiceDiscovery();
+        this.serializer = Serializer.getByCode(serializerCode);
     }
 
     @Override
@@ -55,8 +60,4 @@ public class SocketClient implements RpcClient {
         }
     }
 
-    @Override
-    public void setSerializer(Serializer serializer) {
-        this.serializer = serializer;
-    }
 }

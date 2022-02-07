@@ -38,18 +38,19 @@ public class NettyServer implements RpcServer {
     private Serializer serializer;
 
     public NettyServer(String host, int port) {
+        this(host, port, DEFAULT_SERILIZER);
+    }
+
+    public NettyServer(String host, int port, int serializerCode) {
         this.host = host;
         this.port = port;
         serviceProvider = new ServiceProviderImpl();
         registry = new NacosServiceRegistry();
+        serializer = Serializer.getByCode(serializerCode);
     }
 
     @Override
     public <T> void publishService(T service, Class<T> serviceClass) {
-        if (serializer == null) {
-            log.error("序列化器未初始化");
-            throw new RpcException(RpcError.SERIALIZER_UNDEFINED);
-        }
         serviceProvider.addServiceProvider(service, serviceClass);
         registry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
         
@@ -87,11 +88,4 @@ public class NettyServer implements RpcServer {
         }
 
     }
-
-    @Override
-    public void setSerializer(Serializer serializer) {
-        this.serializer = serializer;
-    }
-
-
 }

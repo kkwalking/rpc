@@ -27,7 +27,6 @@ public class NettyServerBootstrap {
         EchoService echoService = new EchoServiceImpl();
         
         RpcServer server = new NettyServer("127.0.0.1", port);
-        server.setSerializer(Serializer.getByCode(Serializer.PROTOBUF));
         server.publishService(helloService, HelloService.class);
         server.publishService(echoService, EchoService.class);
         server.start();

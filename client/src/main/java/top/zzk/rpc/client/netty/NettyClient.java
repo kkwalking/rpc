@@ -36,10 +36,14 @@ import java.util.concurrent.atomic.AtomicReference;
 public class NettyClient implements RpcClient {
     private static final Bootstrap bootstrap;
     private static final EventLoopGroup group;
-    private Serializer serializer;
+    private final Serializer serializer;
     private final ServiceDiscovery discovery;
 
     public NettyClient() {
+        this(DEFAULT_SERIALIZER);
+    }
+    public NettyClient(Integer serializer) {
+        this.serializer = Serializer.getByCode(serializer);
         this.discovery = new NacosServiceDiscovery();
     }
 
@@ -85,8 +89,4 @@ public class NettyClient implements RpcClient {
         return result.get();
     }
 
-    @Override
-    public void setSerializer(Serializer serializer) {
-        this.serializer = serializer;
-    }
 }

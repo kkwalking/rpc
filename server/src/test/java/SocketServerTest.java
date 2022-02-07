@@ -23,7 +23,6 @@ public class SocketServerTest {
         EchoService echoService = new EchoServiceImpl();
         //初始化server并分配一个序列化器给它
         RpcServer server = new SocketServer("127.0.0.1",8888);
-        server.setSerializer(new ProtobufSerializer());
         server.publishService(helloService, HelloService.class);
         server.publishService(echoService, EchoService.class);
         server.start();

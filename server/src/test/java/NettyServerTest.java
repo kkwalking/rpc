@@ -24,7 +24,6 @@ public class NettyServerTest {
         HelloService helloService = new HelloServiceImpl();
         EchoService echoService = new EchoServiceImpl();
         RpcServer server = new NettyServer("127.0.0.1", 8888);
-        server.setSerializer(new ProtobufSerializer());
         
         server.publishService(helloService, HelloService.class);
         server.publishService(echoService, EchoService.class);

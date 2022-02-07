@@ -20,9 +20,8 @@ public class SocketClientBootstrap {
      */
     public static void main(String[] args) {
 
-        //初始化一个客户端并分配一个序列化器给它
+        //初始化一个客户端
         RpcClient socketClient = new SocketClient();
-        socketClient.setSerializer(new ProtobufSerializer());
         
         RpcClientProxy proxy = new RpcClientProxy(socketClient);
         EchoService echoService = proxy.getProxy(EchoService.class);

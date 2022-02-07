@@ -7,9 +7,7 @@ import top.zzk.rpc.client.RpcClientProxy;
 import top.zzk.rpc.client.raw.SocketClient;
 import top.zzk.rpc.common.entity.RpcRequest;
 import top.zzk.rpc.common.entity.RpcResponse;
-import top.zzk.rpc.common.enumeration.RpcError;
 import top.zzk.rpc.common.enumeration.RpcResponseCode;
-import top.zzk.rpc.common.exception.RpcException;
 import top.zzk.rpc.common.serializer.Serializer;
 
 import java.io.*;
@@ -137,7 +135,6 @@ public class SocketClientTest {
     public void bootTest() {
         RpcClient client = new SocketClient();
         HelloObject helloObject = new HelloObject(1, "test socket client from test framework");
-        client.setSerializer(Serializer.getByCode(Serializer.PROTOBUF));
         RpcClientProxy proxy = new RpcClientProxy(client);
         HelloService proxy1 = proxy.getProxy(HelloService.class);
         String hello = proxy1.hello(helloObject);

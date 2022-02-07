@@ -36,11 +36,16 @@ public class SocketServer implements RpcServer {
     private final ServiceRegistry registry;
 
     public SocketServer(String host, int port) {
+        this(host, port, DEFAULT_SERILIZER);
+    }
+
+    public SocketServer(String host, int port, int serializerCode) {
         this.host = host;
         this.port = port;
         this.threadPool = ThreadPoolFactory.createDefaultThreadPool("socket-rpc-server");
         this.registry = new NacosServiceRegistry();
         this.serviceProvider = new ServiceProviderImpl();
+        this.serializer = Serializer.getByCode(serializerCode);
     }
 
     public void start() {
@@ -59,19 +64,8 @@ public class SocketServer implements RpcServer {
             logger.error("服务器启动时发生错误：", e);
         }
     }
-    
-
-    @Override
-    public void setSerializer(Serializer serializer) {
-        this.serializer = serializer;
-    }
-
     @Override
     public <T> void publishService(T service, Class<T> serviceClass) {
-        if(serializer == null) {
-            logger.error("未设置序列化器");
-            throw new RpcException(RpcError.SERIALIZER_UNDEFINED);
-        }
         serviceProvider.addServiceProvider(service, serviceClass);
         registry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
     }
