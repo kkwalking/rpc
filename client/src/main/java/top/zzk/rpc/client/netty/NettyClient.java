@@ -35,17 +35,18 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 public class NettyClient implements RpcClient {
     private static final Bootstrap bootstrap;
-    private static final NioEventLoopGroup eventExecutors;
+    private static final EventLoopGroup group;
     private Serializer serializer;
     private final ServiceDiscovery discovery;
+
     public NettyClient() {
         this.discovery = new NacosServiceDiscovery();
     }
 
     static {
-        eventExecutors = new NioEventLoopGroup();
+        group = new NioEventLoopGroup();
         bootstrap = new Bootstrap();
-        bootstrap.group(eventExecutors)
+        bootstrap.group(group)
                 .channel(NioSocketChannel.class)
                 .option(ChannelOption.SO_KEEPALIVE, true);
 
@@ -53,34 +54,34 @@ public class NettyClient implements RpcClient {
 
     @Override
     public Object sendRequest(RpcRequest rpcRequest) {
-        if(this.serializer == null) {
+        if (this.serializer == null) {
             log.error("序列化器未初始化");
             throw new RpcException(RpcError.SERIALIZER_UNDEFINED);
         }
         AtomicReference<Object> result = new AtomicReference<>(null);
         try {
             InetSocketAddress inetSocketAddress = discovery.lookupService(rpcRequest.getInterfaceName());
-            Channel channel = ChannnelProvider.getChannel(inetSocketAddress,serializer);
-            if (channel.isActive()) {
-                channel.writeAndFlush(rpcRequest).addListener( future1 -> {
-                    if (future1.isSuccess()) {
-                        log.info("客户端成功发送消息：{}", rpcRequest.toString());
-                    } else {
-                        log.error("发送消息时发生错误:", future1.cause());
-                    }
-                });
-                channel.closeFuture().sync();
-                AttributeKey<RpcResponse> key = AttributeKey.valueOf("rpcResponse"+rpcRequest.getRequestId());
-                RpcResponse rpcResponse = channel.attr(key).get();
-                MessageChecker.check(rpcRequest, rpcResponse);
-                result.set(rpcResponse.getData());
-            } else {
-                System.exit(0);
+            Channel channel = ChannnelProvider.getChannel(inetSocketAddress, serializer);
+            if (!channel.isActive()) {
+                group.shutdownGracefully();
+                return null;
             }
+            channel.writeAndFlush(rpcRequest).addListener(future1 -> {
+                if (future1.isSuccess()) {
+                    log.info("客户端成功发送消息：{}", rpcRequest.toString());
+                } else {
+                    log.error("发送消息时发生错误:", future1.cause());
+                }
+            });
+            channel.closeFuture().sync();
+            AttributeKey<RpcResponse> key = AttributeKey.valueOf("rpcResponse" + rpcRequest.getRequestId());
+            RpcResponse rpcResponse = channel.attr(key).get();
+            MessageChecker.check(rpcRequest, rpcResponse);
+            result.set(rpcResponse.getData());
         } catch (InterruptedException e) {
             log.error("发送消息时有错误发生：", e);
-
-        } 
+            Thread.currentThread().interrupt();
+        }
         return result.get();
     }
 

@@ -8,5 +8,5 @@ The project is a tiny framework of RPC in the PRC learning process.
 > 学习RPC过程中实现的简单RPC框架
 >
 - 实现了两种通信方式：直接使用JDK socket和netty方式
-- 实现了多种序列化方式：Json、Hessian、Kryo
+- 实现了多种序列化方式：Json、Hessian、Kryo、Protobuf
 

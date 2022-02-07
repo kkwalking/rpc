@@ -13,6 +13,7 @@ import top.zzk.rpc.common.codec.CommonDecoder;
 import top.zzk.rpc.common.codec.CommonEncoder;
 import top.zzk.rpc.common.enumeration.RpcError;
 import top.zzk.rpc.common.exception.RpcException;
+import top.zzk.rpc.common.hook.ShutdownHook;
 import top.zzk.rpc.common.registry.NacosServiceRegistry;
 import top.zzk.rpc.common.registry.ServiceRegistry;
 import top.zzk.rpc.common.serializer.Serializer;
@@ -76,6 +77,7 @@ public class NettyServer implements RpcServer {
                         }
                     });
             ChannelFuture future = serverBootstrap.bind(port).sync();
+            ShutdownHook.getShutdownHook().addHootForClearAllServices();
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             log.error("启动服务器时发生错误:", e);

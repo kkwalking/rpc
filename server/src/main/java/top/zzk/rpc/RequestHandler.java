@@ -1,5 +1,6 @@
 package top.zzk.rpc;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.zzk.rpc.common.entity.RpcRequest;
@@ -16,31 +17,26 @@ import java.lang.reflect.Method;
  * @date 2021/11/28
  * description 服务端请求处理器，对请求进行具体服务调用
  */
+@Slf4j
 public class RequestHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private static final ServiceProvider serviceProvider = new ServiceProviderImpl();
     
 
     public static Object handle(RpcRequest rpcRequest) {
-        Object result = null;
         Object service = serviceProvider.getServiceProvider(rpcRequest.getInterfaceName());
-        try {
-            result = RequestHandler.invokeMethod(rpcRequest, service);
-            logger.info("服务:{} 成功调用{} 方法", rpcRequest.getInterfaceName(), rpcRequest.getMethodName());
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            logger.info("调用或发送时有错误发生：", e);
-        }
-        return result;
+        return invokeMethod(rpcRequest, service);
     }
 
-    private static Object invokeMethod(RpcRequest request, Object service) throws InvocationTargetException, IllegalAccessException {
-        Method method;
+    private static Object invokeMethod(RpcRequest request, Object service) {
+        Object result;
         try {
-            method = service.getClass().getMethod(request.getMethodName(), request.getParamTypes());
-        } catch (NoSuchMethodException e) {
+            Method method = service.getClass().getMethod(request.getMethodName(), request.getParamTypes());
+            result = method.invoke(service, request.getParams());
+            log.info("服务:{} 成功调用方法:{}", request.getInterfaceName(), request.getMethodName());
+        } catch (NoSuchMethodException| IllegalAccessException | InvocationTargetException e) {
             return RpcResponse.fail(RpcResponseCode.NOT_FOUND_METHOD, request.getRequestId());
-        }
-        return method.invoke(service, request.getParams());
+        } 
+        return result;
     }
 }

@@ -23,12 +23,10 @@ public class RequestHandlerThread implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandlerThread.class);
 
     private final Socket socket;
-    private final ServiceRegistry serviceRegistry;
     private final Serializer serializer;
 
-    public RequestHandlerThread(Socket socket,ServiceRegistry serviceRegistry, Serializer serializer) {
+    public RequestHandlerThread(Socket socket, Serializer serializer) {
         this.socket = socket;
-        this.serviceRegistry = serviceRegistry;
         this.serializer = serializer;
     }
 

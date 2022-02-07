@@ -5,10 +5,11 @@ import org.slf4j.LoggerFactory;
 import top.zzk.rpc.RpcServer;
 import top.zzk.rpc.common.enumeration.RpcError;
 import top.zzk.rpc.common.exception.RpcException;
+import top.zzk.rpc.common.hook.ShutdownHook;
 import top.zzk.rpc.common.registry.NacosServiceRegistry;
 import top.zzk.rpc.common.registry.ServiceRegistry;
 import top.zzk.rpc.common.serializer.Serializer;
-import top.zzk.rpc.common.utils.ThreadPoolFactory;
+import top.zzk.rpc.common.factory.ThreadPoolFactory;
 import top.zzk.rpc.serviceprovider.ServiceProvider;
 import top.zzk.rpc.serviceprovider.ServiceProviderImpl;
 
@@ -43,13 +44,15 @@ public class SocketServer implements RpcServer {
     }
 
     public void start() {
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
+        try (ServerSocket serverSocket = new ServerSocket()) {
+            serverSocket.bind(new InetSocketAddress(host, port));
             logger.info("服务器已启动...");
             logger.info("服务器监听端口:{}", port);
+            ShutdownHook.getShutdownHook().addHootForClearAllServices();
             Socket socket;
             while ((socket = serverSocket.accept()) != null) {
                 logger.info("客户端连接，(ip:{}, port:{})", socket.getInetAddress(), socket.getPort());
-                threadPool.execute(new RequestHandlerThread(socket, registry,serializer));
+                threadPool.execute(new RequestHandlerThread(socket,serializer));
             }
             threadPool.shutdown();
         } catch (IOException e) {
