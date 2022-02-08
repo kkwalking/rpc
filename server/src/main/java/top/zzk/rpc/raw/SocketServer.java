@@ -2,6 +2,7 @@ package top.zzk.rpc.raw;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.zzk.rpc.AbstractRpcServer;
 import top.zzk.rpc.RpcServer;
 import top.zzk.rpc.common.enumeration.RpcError;
 import top.zzk.rpc.common.exception.RpcException;
@@ -24,16 +25,12 @@ import java.util.concurrent.*;
  * @date 2021/11/28
  * description  Socket服务器
  */
-public class SocketServer implements RpcServer {
+public class SocketServer extends AbstractRpcServer {
 
     private static final Logger logger = LoggerFactory.getLogger(SocketServer.class);
     
     private final ExecutorService threadPool;
     private Serializer serializer;
-    private final String host;
-    private final int port;
-    private final ServiceProvider serviceProvider;
-    private final ServiceRegistry registry;
 
     public SocketServer(String host, int port) {
         this(host, port, DEFAULT_SERILIZER);
@@ -43,12 +40,13 @@ public class SocketServer implements RpcServer {
         this.host = host;
         this.port = port;
         this.threadPool = ThreadPoolFactory.createDefaultThreadPool("socket-rpc-server");
-        this.registry = new NacosServiceRegistry();
+        this.serviceRegistry = new NacosServiceRegistry();
         this.serviceProvider = new ServiceProviderImpl();
         this.serializer = Serializer.getByCode(serializerCode);
     }
 
     public void start() {
+        scanServices();
         try (ServerSocket serverSocket = new ServerSocket()) {
             serverSocket.bind(new InetSocketAddress(host, port));
             logger.info("服务器已启动...");
@@ -63,10 +61,5 @@ public class SocketServer implements RpcServer {
         } catch (IOException e) {
             logger.error("服务器启动时发生错误：", e);
         }
-    }
-    @Override
-    public <T> void publishService(T service, Class<T> serviceClass) {
-        serviceProvider.addServiceProvider(service, serviceClass);
-        registry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
     }
 }

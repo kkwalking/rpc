@@ -12,7 +12,7 @@ public interface ServiceProvider {
      * @param service: 待添加的服务实例
      * @return void
      */
-    <T> void addServiceProvider(T service, Class<T> serviceClass);
+    <T> void addServiceProvider(T service, String serviceName);
     /*
      * @Description: 获取服务实例
      * 

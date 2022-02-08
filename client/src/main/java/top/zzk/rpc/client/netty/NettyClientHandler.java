@@ -6,7 +6,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
-import io.netty.util.AttributeKey;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 import top.zzk.rpc.common.entity.RpcRequest;
@@ -59,7 +58,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<RpcResponse>
             if(state == IdleState.WRITER_IDLE) {
                 log.info("发送心跳包[{}]", ctx.channel().remoteAddress());
                 Channel channel = ChannelProvider.getChannel((InetSocketAddress)ctx.channel().remoteAddress(),
-                        Serializer.getByCode(Serializer.DEFALUT_SERIALIZER));
+                        Serializer.getByCode(Serializer.DEFAULT_SERIALIZER));
                 RpcRequest request = new RpcRequest();
                 request.setHeartBeat(true);
                 channel.writeAndFlush(request).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);

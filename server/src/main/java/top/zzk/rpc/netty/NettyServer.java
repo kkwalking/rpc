@@ -9,6 +9,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
+import top.zzk.rpc.AbstractRpcServer;
 import top.zzk.rpc.RpcServer;
 import top.zzk.rpc.common.codec.CommonDecoder;
 import top.zzk.rpc.common.codec.CommonEncoder;
@@ -30,13 +31,8 @@ import java.util.concurrent.TimeUnit;
  * description 使用netty实现NIO方式通信的服务器
  */
 @Slf4j
-public class NettyServer implements RpcServer {
-
-    private final String host;
-    private final int port;
-    private final ServiceProvider serviceProvider;
-
-    private final ServiceRegistry registry;
+public class NettyServer extends AbstractRpcServer {
+    
     private Serializer serializer;
 
     public NettyServer(String host, int port) {
@@ -46,20 +42,15 @@ public class NettyServer implements RpcServer {
     public NettyServer(String host, int port, int serializerCode) {
         this.host = host;
         this.port = port;
-        serviceProvider = new ServiceProviderImpl();
-        registry = new NacosServiceRegistry();
-        serializer = Serializer.getByCode(serializerCode);
+        this.serviceProvider = new ServiceProviderImpl();
+        this.serviceRegistry = new NacosServiceRegistry();
+        this.serializer = Serializer.getByCode(serializerCode);
     }
-
-    @Override
-    public <T> void publishService(T service, Class<T> serviceClass) {
-        serviceProvider.addServiceProvider(service, serviceClass);
-        registry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
-        
-    }
+    
 
     @Override
     public void start() {
+        scanServices();
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workGroup = new NioEventLoopGroup();
         try {

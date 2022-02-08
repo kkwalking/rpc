@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.zzk.rpc.common.enumeration.RpcError;
 import top.zzk.rpc.common.exception.RpcException;
 import top.zzk.rpc.common.loadbalancer.LoadBalancer;
+import top.zzk.rpc.common.loadbalancer.RandomLoadBalancer;
 import top.zzk.rpc.common.utils.NacosUtils;
 
 import java.net.InetSocketAddress;
@@ -25,13 +26,20 @@ public class NacosServiceDiscovery implements ServiceDiscovery {
     private final LoadBalancer loadBalancer;
 
     public NacosServiceDiscovery(LoadBalancer loadBalancer) {
-        this.loadBalancer = loadBalancer;
+        if(loadBalancer == null) 
+            this.loadBalancer = new RandomLoadBalancer();
+        else
+            this.loadBalancer = loadBalancer;
     }
 
     @Override
     public InetSocketAddress lookupService(String serviceName) {
         try {
             List<Instance> instances = NacosUtils.getAllInstances(serviceName);
+            if (instances.size() == 0) {
+                log.error("找不到对应的服务：" + serviceName);
+                throw new RpcException(RpcError.SERVICE_NOT_FOUND);
+            }
             Instance instance = loadBalancer.select(instances);
             return new InetSocketAddress(instance.getIp(), instance.getPort());
         } catch (NacosException e) {

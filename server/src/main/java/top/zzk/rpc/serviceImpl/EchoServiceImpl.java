@@ -2,10 +2,12 @@ package top.zzk.rpc.serviceImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.zzk.rpc.annotation.Service;
 import top.zzk.rpc.api.EchoService;
 /*
     EchoService的具体实现
  */
+@Service
 public class EchoServiceImpl implements EchoService {
     private static final Logger logger = LoggerFactory.getLogger(EchoServiceImpl.class);
     

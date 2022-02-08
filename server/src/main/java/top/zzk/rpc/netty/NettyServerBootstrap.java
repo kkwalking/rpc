@@ -1,6 +1,7 @@
 package top.zzk.rpc.netty;
 
 import top.zzk.rpc.RpcServer;
+import top.zzk.rpc.annotation.ServiceScan;
 import top.zzk.rpc.api.EchoService;
 import top.zzk.rpc.api.HelloService;
 import top.zzk.rpc.common.serializer.Serializer;
@@ -12,7 +13,8 @@ import top.zzk.rpc.serviceImpl.HelloServiceImpl;
  * @date 2021/12/9
  * description Netty服务端启动器
  */
-public class NettyServerBootstrap {
+@ServiceScan(value = "top.zzk.rpc.serviceImpl")
+public class NettyServerBootstrap{
     public static void main(String[] args) {
         /*
             args[0]:port  (required)
@@ -22,13 +24,8 @@ public class NettyServerBootstrap {
             return;
         }
         int port = Integer.parseInt(args[0]);
-
-        HelloService helloService = new HelloServiceImpl();
-        EchoService echoService = new EchoServiceImpl();
         
-        RpcServer server = new NettyServer("127.0.0.1", 22222);
-        server.publishService(helloService, HelloService.class);
-        server.publishService(echoService, EchoService.class);
+        RpcServer server = new NettyServer("127.0.0.1", port);
         server.start();
     }
 }
