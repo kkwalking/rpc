@@ -8,6 +8,8 @@ import top.zzk.rpc.common.entity.RpcRequest;
 import top.zzk.rpc.common.entity.RpcResponse;
 import top.zzk.rpc.common.enumeration.RpcError;
 import top.zzk.rpc.common.exception.RpcException;
+import top.zzk.rpc.common.loadbalancer.LoadBalancer;
+import top.zzk.rpc.common.loadbalancer.RandomLoadBalancer;
 import top.zzk.rpc.common.serializer.Serializer;
 import top.zzk.rpc.common.utils.MessageChecker;
 import top.zzk.rpc.common.utils.ObjectReader;
@@ -28,14 +30,16 @@ public class SocketClient implements RpcClient {
     private Serializer serializer;
     
     private final ServiceDiscovery discovery;
-
+    private LoadBalancer loadBalancer;
     public SocketClient() {
-        this(DEFAULT_SERIALIZER);
+        this(DEFAULT_SERIALIZER, new RandomLoadBalancer());
     }
-
-    public SocketClient(Integer serializerCode) {
+    public SocketClient(LoadBalancer loadBalancer) {
+        this(DEFAULT_SERIALIZER, loadBalancer);
+    }
+    public SocketClient(Integer serializerCode, LoadBalancer loadBalancer) {
         //todo 目前这里的服务发现是 Nacos, 并且是写死在这里的
-        this.discovery = new NacosServiceDiscovery();
+        this.discovery = new NacosServiceDiscovery(loadBalancer);
         this.serializer = Serializer.getByCode(serializerCode);
     }
 

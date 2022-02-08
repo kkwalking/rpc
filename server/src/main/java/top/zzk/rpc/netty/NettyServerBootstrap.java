@@ -26,7 +26,7 @@ public class NettyServerBootstrap {
         HelloService helloService = new HelloServiceImpl();
         EchoService echoService = new EchoServiceImpl();
         
-        RpcServer server = new NettyServer("127.0.0.1", port);
+        RpcServer server = new NettyServer("127.0.0.1", 22222);
         server.publishService(helloService, HelloService.class);
         server.publishService(echoService, EchoService.class);
         server.start();

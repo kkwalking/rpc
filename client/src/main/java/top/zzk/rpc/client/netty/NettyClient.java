@@ -14,6 +14,8 @@ import top.zzk.rpc.common.entity.RpcResponse;
 import top.zzk.rpc.common.enumeration.RpcError;
 import top.zzk.rpc.common.exception.RpcException;
 import top.zzk.rpc.common.factory.SingletonFactory;
+import top.zzk.rpc.common.loadbalancer.LoadBalancer;
+import top.zzk.rpc.common.loadbalancer.RandomLoadBalancer;
 import top.zzk.rpc.common.serializer.Serializer;
 import top.zzk.rpc.common.utils.MessageChecker;
 
@@ -33,14 +35,23 @@ public class NettyClient implements RpcClient {
     private final Serializer serializer;
     private final ServiceDiscovery discovery;
     private final UnprocessedRequest unprocessedRequest;
-
-    public NettyClient() {
-        this(DEFAULT_SERIALIZER);
+    private LoadBalancer loadBalancer;
+    
+    public NettyClient(LoadBalancer loadBalancer) {
+        this(DEFAULT_SERIALIZER, loadBalancer);
     }
-    public NettyClient(Integer serializer) {
+
+    /**
+     * 默认使用随机负载均衡策略
+     */
+    public NettyClient() {
+        this(DEFAULT_SERIALIZER, new RandomLoadBalancer());
+    }
+    public NettyClient(Integer serializer, LoadBalancer loadBalancer) {
         this.serializer = Serializer.getByCode(serializer);
-        this.discovery = new NacosServiceDiscovery();
+        this.discovery = new NacosServiceDiscovery(loadBalancer);
         this.unprocessedRequest = SingletonFactory.getInstance(UnprocessedRequest.class);
+        this.loadBalancer = loadBalancer;
     }
 
     static {

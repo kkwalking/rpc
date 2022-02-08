@@ -6,6 +6,7 @@ import top.zzk.rpc.client.netty.NettyClient;
 import top.zzk.rpc.client.raw.SocketClient;
 import top.zzk.rpc.common.entity.RpcRequest;
 import top.zzk.rpc.common.entity.RpcResponse;
+import top.zzk.rpc.common.utils.MessageChecker;
 
 import java.io.InterruptedIOException;
 import java.lang.reflect.InvocationHandler;
@@ -35,20 +36,21 @@ public class RpcClientProxy implements InvocationHandler {
                 method.getName(), args, method.getParameterTypes(), false);
 
         //返回整个响应
-        Object result = null;
+        RpcResponse result = null;
         if (client instanceof NettyClient) {
             CompletableFuture<RpcResponse> completableFuture = (CompletableFuture<RpcResponse>) client.sendRequest(request);
             try {
-                result = completableFuture.get().getData();
+                result = completableFuture.get();
             } catch (ExecutionException e) {
                 logger.error("方法调用请求失败", e);
                 return null;
             }
         } else if (client instanceof SocketClient) {
             RpcResponse rpcResponse = (RpcResponse) client.sendRequest(request);
-            result = rpcResponse.getData();
+            result = rpcResponse;
         }
-        return result;
+        MessageChecker.check(request, result);
+        return result.getData();
     }
 
     @SuppressWarnings("unchecked")
