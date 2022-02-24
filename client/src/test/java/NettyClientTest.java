@@ -34,7 +34,7 @@ public class NettyClientTest {
     @Test
     public void loadBalanceTest() {
         LoadBalancer RoundRobin = new RoundRobinLoadBalancer();
-        RpcClient client = new NettyClient(RoundRobin);
+        RpcClient client = new NettyClient();
         RpcClientProxy rpcClientProxy = new RpcClientProxy(client);
         System.out.println("-----------------------------------------");
         HelloService helloService = rpcClientProxy.getProxy(HelloService.class);

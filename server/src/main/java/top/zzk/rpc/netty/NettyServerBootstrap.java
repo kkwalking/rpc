@@ -26,6 +26,6 @@ public class NettyServerBootstrap{
         int port = Integer.parseInt(args[0]);
         
         RpcServer server = new NettyServer("127.0.0.1", port);
-        server.start();
+        server.startup();
     }
 }

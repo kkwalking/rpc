@@ -27,6 +27,6 @@ public class SocketServerBootstrap {
         int port = Integer.parseInt(args[0]);
         //初始化server并分配一个序列化器给它
         RpcServer server = new SocketServer("127.0.0.1",port);
-        server.start();
+        server.startup();
     }
 }

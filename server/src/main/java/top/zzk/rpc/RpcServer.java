@@ -10,6 +10,7 @@ import top.zzk.rpc.common.serializer.Serializer;
 public interface RpcServer {
     int DEFAULT_SERILIZER = Serializer.DEFAULT_SERIALIZER;
     void start();
-    
+    void config();
+    void startup();
     <T> void publishService(T service, String serviceName);
 }

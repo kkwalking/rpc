@@ -8,7 +8,7 @@ import java.net.InetSocketAddress;
  * description 服务注册中心通用接口
  */
 public interface ServiceRegistry {
-    
+
     /*
      * @Description: 将服务注册进注册中心
      * 
@@ -17,4 +17,5 @@ public interface ServiceRegistry {
      * @return void
      */
     void register(String serviceName, InetSocketAddress inetSocketAddress);
+    void clearRegistry();
 }

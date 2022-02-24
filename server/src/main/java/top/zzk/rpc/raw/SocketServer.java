@@ -30,28 +30,29 @@ public class SocketServer extends AbstractRpcServer {
     private static final Logger logger = LoggerFactory.getLogger(SocketServer.class);
     
     private final ExecutorService threadPool;
-    private Serializer serializer;
 
     public SocketServer(String host, int port) {
-        this(host, port, DEFAULT_SERILIZER);
-    }
-
-    public SocketServer(String host, int port, int serializerCode) {
+        config();
         this.host = host;
         this.port = port;
         this.threadPool = ThreadPoolFactory.createDefaultThreadPool("socket-rpc-server");
-        this.serviceRegistry = new NacosServiceRegistry();
+        this.serviceRegistry = new NacosServiceRegistry(registryHost, registryPort);
         this.serviceProvider = new ServiceProviderImpl();
+    }
+
+    public SocketServer(String host, int port, int serializerCode) {
+        this(host, port);
         this.serializer = Serializer.getByCode(serializerCode);
     }
 
+    @Override
     public void start() {
-        scanServices();
+
         try (ServerSocket serverSocket = new ServerSocket()) {
             serverSocket.bind(new InetSocketAddress(host, port));
             logger.info("服务器已启动...");
             logger.info("服务器监听端口:{}", port);
-            ShutdownHook.getShutdownHook().addHootForClearAllServices();
+//            new ShutdownHook(serviceRegistry).addHootForClearAllServices();
             Socket socket;
             while ((socket = serverSocket.accept()) != null) {
                 logger.info("客户端连接，(ip:{}, port:{})", socket.getInetAddress(), socket.getPort());

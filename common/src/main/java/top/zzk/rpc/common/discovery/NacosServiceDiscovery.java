@@ -21,21 +21,30 @@ import java.util.List;
  * description
  */
 @Slf4j
-public class NacosServiceDiscovery implements ServiceDiscovery {
+public class NacosServiceDiscovery extends AbstractDiscovery {
     
     private final LoadBalancer loadBalancer;
-
-    public NacosServiceDiscovery(LoadBalancer loadBalancer) {
-        if(loadBalancer == null) 
+    private NamingService namingService;
+    public NacosServiceDiscovery(LoadBalancer loadBalancer, String discoveryHost, int discoveryPort) {
+        if(loadBalancer == null) {
             this.loadBalancer = new RandomLoadBalancer();
-        else
+        } else {
             this.loadBalancer = loadBalancer;
+        }
+        this.discoveryHost = discoveryHost;
+        this.discoveryPort = discoveryPort;
+        try {
+            namingService = NamingFactory.createNamingService(discoveryHost+":" + discoveryPort);
+        } catch (NacosException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
     public InetSocketAddress lookupService(String serviceName) {
         try {
-            List<Instance> instances = NacosUtils.getAllInstances(serviceName);
+            List<Instance> instances = namingService.getAllInstances(serviceName);
             if (instances.size() == 0) {
                 log.error("找不到对应的服务：" + serviceName);
                 throw new RpcException(RpcError.SERVICE_NOT_FOUND);

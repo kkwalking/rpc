@@ -4,24 +4,19 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
+import top.zzk.rpc.client.AbstractRpcClient;
 import top.zzk.rpc.client.RpcClient;
 import top.zzk.rpc.common.discovery.NacosServiceDiscovery;
 import top.zzk.rpc.common.discovery.ServiceDiscovery;
 import top.zzk.rpc.common.entity.RpcRequest;
 import top.zzk.rpc.common.entity.RpcResponse;
-import top.zzk.rpc.common.enumeration.RpcError;
-import top.zzk.rpc.common.exception.RpcException;
 import top.zzk.rpc.common.factory.SingletonFactory;
 import top.zzk.rpc.common.loadbalancer.LoadBalancer;
-import top.zzk.rpc.common.loadbalancer.RandomLoadBalancer;
 import top.zzk.rpc.common.serializer.Serializer;
-import top.zzk.rpc.common.utils.MessageChecker;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author zzk
@@ -29,36 +24,36 @@ import java.util.concurrent.atomic.AtomicReference;
  * description
  */
 @Slf4j
-public class NettyClient implements RpcClient {
+public class NettyClient extends AbstractRpcClient {
     private static final Bootstrap bootstrap;
     private static final EventLoopGroup group;
-    private final Serializer serializer;
-    private final ServiceDiscovery discovery;
-    private final UnprocessedRequest unprocessedRequest;
+    private  ServiceDiscovery discovery;
+    private  UnprocessedRequest unprocessedRequest;
     private LoadBalancer loadBalancer;
-    
-    public NettyClient(LoadBalancer loadBalancer) {
-        this(DEFAULT_SERIALIZER, loadBalancer);
-    }
-
-    /**
-     * 默认使用随机负载均衡策略
-     */
-    public NettyClient() {
-        this(DEFAULT_SERIALIZER, new RandomLoadBalancer());
-    }
-    public NettyClient(Integer serializer, LoadBalancer loadBalancer) {
-        this.serializer = Serializer.getByCode(serializer);
-        this.discovery = new NacosServiceDiscovery(loadBalancer);
-        this.unprocessedRequest = SingletonFactory.getInstance(UnprocessedRequest.class);
-        this.loadBalancer = loadBalancer;
-    }
 
     static {
         group = new NioEventLoopGroup();
         bootstrap = new Bootstrap();
         bootstrap.group(group)
                 .channel(NioSocketChannel.class);
+    }
+
+    /**
+     * 默认使用随机负载均衡策略
+     */
+    public NettyClient() {
+        config();
+        this.discovery = new NacosServiceDiscovery(loadBalancer, discoveryHost, discoveryPort );
+        this.unprocessedRequest = SingletonFactory.getInstance(UnprocessedRequest.class);
+    }
+
+    public void setLoadBalancer(LoadBalancer loadBalancer) {
+        this.loadBalancer = loadBalancer;
+    }
+
+    @Override
+    public void setSerializer(int serializerCode) {
+        this.serializer = Serializer.getByCode(serializerCode);
     }
 
     @Override

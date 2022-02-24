@@ -15,6 +15,7 @@ import top.zzk.rpc.common.serializer.Serializer;
 public class NettyClientBootstrap {
     public static void main(String[] args) {
         RpcClient client = new NettyClient();
+        client.setSerializer(Serializer.KRYO_SERIALIZER);
         RpcClientProxy rpcClientProxy = new RpcClientProxy(client);
 
         System.out.println("-----------------------------------------");

@@ -11,4 +11,6 @@ import top.zzk.rpc.common.serializer.Serializer;
 public interface RpcClient {
     int DEFAULT_SERIALIZER = 0;
     Object sendRequest(RpcRequest rpcRequest);
+    void config();
+    void setSerializer(int serializerCode);
 }

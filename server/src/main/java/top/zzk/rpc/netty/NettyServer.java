@@ -19,6 +19,7 @@ import top.zzk.rpc.common.hook.ShutdownHook;
 import top.zzk.rpc.common.registry.NacosServiceRegistry;
 import top.zzk.rpc.common.registry.ServiceRegistry;
 import top.zzk.rpc.common.serializer.Serializer;
+import top.zzk.rpc.common.utils.NacosUtils;
 import top.zzk.rpc.serviceprovider.ServiceProvider;
 import top.zzk.rpc.serviceprovider.ServiceProviderImpl;
 
@@ -32,25 +33,29 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class NettyServer extends AbstractRpcServer {
-    
-    private Serializer serializer;
 
+
+    /**
+     * 配置文件中会配置序列化器（没配置则使用默认序列化器）,这里配置的话则会优先使用这里的配置
+     * @param host
+     * @param port
+     */
     public NettyServer(String host, int port) {
-        this(host, port, DEFAULT_SERILIZER);
-    }
-
-    public NettyServer(String host, int port, int serializerCode) {
+        config();
         this.host = host;
         this.port = port;
         this.serviceProvider = new ServiceProviderImpl();
-        this.serviceRegistry = new NacosServiceRegistry();
+        this.serviceRegistry = new NacosServiceRegistry(registryHost, registryPort);
+    }
+
+    public NettyServer(String host, int port, int serializerCode) {
+        this(host, port);
         this.serializer = Serializer.getByCode(serializerCode);
     }
     
 
     @Override
     public void start() {
-        scanServices();
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workGroup = new NioEventLoopGroup();
         try {
@@ -72,7 +77,7 @@ public class NettyServer extends AbstractRpcServer {
                         }
                     });
             ChannelFuture future = serverBootstrap.bind(host, port).sync();
-            ShutdownHook.getShutdownHook().addHootForClearAllServices();
+//            new ShutdownHook(serviceRegistry).addHootForClearAllServices();
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             log.error("启动服务器时发生错误:", e);
