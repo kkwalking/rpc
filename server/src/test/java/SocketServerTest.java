@@ -1,11 +1,6 @@
 import org.junit.Test;
-import top.zzk.rpc.RpcServer;
-import top.zzk.rpc.api.EchoService;
-import top.zzk.rpc.api.HelloService;
-import top.zzk.rpc.common.serializer.ProtobufSerializer;
-import top.zzk.rpc.raw.SocketServer;
-import top.zzk.rpc.serviceImpl.EchoServiceImpl;
-import top.zzk.rpc.serviceImpl.HelloServiceImpl;
+import top.zzk.rpc.server.RpcServer;
+import top.zzk.rpc.server.raw.SocketServer;
 
 /**
  * @author zzk
@@ -21,7 +16,7 @@ public class SocketServerTest {
         
         //初始化server并分配一个序列化器给它
         RpcServer server = new SocketServer("127.0.0.1",8888);
-        server.start();
+        server.startup();
     }
     
 }

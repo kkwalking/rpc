@@ -1,6 +1,6 @@
 package top.zzk.rpc.serviceImpl;
 
-import top.zzk.rpc.annotation.Service;
+import top.zzk.rpc.server.annotation.Service;
 import top.zzk.rpc.api.ByeService;
 
 /**

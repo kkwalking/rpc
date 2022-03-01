@@ -5,10 +5,9 @@ import top.zzk.rpc.api.HelloService;
 import top.zzk.rpc.client.RpcClient;
 import top.zzk.rpc.client.RpcClientProxy;
 import top.zzk.rpc.client.raw.SocketClient;
-import top.zzk.rpc.common.entity.RpcRequest;
-import top.zzk.rpc.common.entity.RpcResponse;
-import top.zzk.rpc.common.enumeration.RpcResponseCode;
-import top.zzk.rpc.common.serializer.Serializer;
+import top.zzk.rpc.entity.RpcRequest;
+import top.zzk.rpc.entity.RpcResponse;
+import top.zzk.rpc.enumeration.RpcResponseCode;
 
 import java.io.*;
 import java.net.ServerSocket;

@@ -16,5 +16,5 @@ The project is a tiny framework of RPC in the PRC learning process.
 - 支持配置文件进行服务自动注册
 - 引入Spring，通过注解注册服务
 - 设置gzip压缩
-- 支持zookeeper做注册中心，也就意味着支持注册中心可配置
+- 支持zookeeper做注册中心，最后能支持注册中心可配置
 - 处理同一个接口可有多个类实现
