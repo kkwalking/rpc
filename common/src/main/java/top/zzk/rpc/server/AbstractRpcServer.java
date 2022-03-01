@@ -48,7 +48,9 @@ public abstract class AbstractRpcServer implements RpcServer {
     public void config() {
         Properties pro = new Properties();
         try {
-            InputStream in = this.getClass().getClassLoader().getResourceAsStream("conf.properties");
+            InputStream in = this.getClass().getClassLoader().getResourceAsStream("server-conf.properties");
+            if (in == null)
+                throw new IllegalStateException("找不到配置文件");
             pro.load(in);
 
             if(pro.get("serializer") != null) {
@@ -72,7 +74,7 @@ public abstract class AbstractRpcServer implements RpcServer {
                 log.info("序列化器为{}", serializerStr);
             } else {
                 //默认为kryo
-                this.serializer = this.serializer = new KryoSerializer();
+                this.serializer = new KryoSerializer();
             }
             this.registryHost = pro.getProperty("registry_address", "127.0.0.1");
             log.info("注册中心地址为{}", registryHost);
@@ -81,7 +83,7 @@ public abstract class AbstractRpcServer implements RpcServer {
         } catch (FileNotFoundException e) {
             log.error("读取配置文件失败");
         } catch (IOException e) {
-            log.error("位置文件加载失败");
+            log.error("配置文件加载失败");
         }
     }
 

@@ -25,7 +25,7 @@ public abstract class AbstractRpcClient implements RpcClient{
     public void config() {
         Properties pro = new Properties();
         try {
-            InputStream in = this.getClass().getClassLoader().getResourceAsStream("conf.properties");
+            InputStream in = this.getClass().getClassLoader().getResourceAsStream("client-conf.properties");
             pro.load(in);
             if (pro.get("loadbalance") != null) {
                 String loadBalanceStr = pro.getProperty("loadbalance");
@@ -38,6 +38,7 @@ public abstract class AbstractRpcClient implements RpcClient{
                         loadBalancer = new RandomLoadBalancer();
                         break;
                 }
+                log.info("负载均衡策略为{}", loadBalanceStr);
             }
             if(pro.get("serializer") != null) {
                 String serializerStr = pro.getProperty("serializer");
@@ -63,12 +64,14 @@ public abstract class AbstractRpcClient implements RpcClient{
                 this.serializer = new KryoSerializer();
             }
             this.discoveryHost = pro.getProperty("discovery_host", "127.0.0.1");
+            log.info("服务发现ip为:{}", this.discoveryHost);
             this.discoveryPort = Integer.parseInt(pro.getProperty("discovery_port", "8848"));
+            log.info("服务发现port为:{}", this.discoveryPort);
 
         } catch (FileNotFoundException e) {
             log.error("读取配置文件失败");
         } catch (IOException e) {
-            log.error("位置文件加载失败");
+            log.error("配置文件加载失败");
         }
     }
 }
