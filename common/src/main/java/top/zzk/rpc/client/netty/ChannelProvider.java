@@ -18,19 +18,26 @@ import java.util.concurrent.*;
 /**
  * @author zzk
  * @date 2021/12/11
- * description
+ * description 2022年5月27日-重构分析，把eventLoopGroup和bootstrap整合到一个ChannelProvider是为了定制serializer
+ * 但是我觉得这样不太划算，每次都要重新把bootstrap的handle重新初始化一次，另外一点就是为了做个map把未完成的请求future存起来
+ * 后续进行操作，但是这个可以用ChannelGroup来代替
  */
 @Slf4j
 public class ChannelProvider {
-    private static EventLoopGroup eventLoopGroup;
-    private static Bootstrap bootstrap = initializeBootstrap();
-    private static Map<String, Channel> channels = new ConcurrentHashMap<>();
+    private static EventLoopGroup workerGroup;
+    private static final Bootstrap bootstrap = initializeBootstrap();
+    private static final Map<String, Channel> channels = new ConcurrentHashMap<>();
+
+
+    public static void shutdown() {
+        workerGroup.shutdownGracefully();
+    }
 
     public static Channel getChannel(InetSocketAddress inetSocketAddress, Serializer serializer) throws InterruptedException {
         String key = inetSocketAddress.toString() + serializer.getCode();
         if (channels.containsKey(key)) {
             Channel channel = channels.get(key);
-            if (channels != null && channel.isActive()) {
+            if (channel.isActive()) {
                 return channel;
             } else {
                 channels.remove(key);
@@ -73,9 +80,9 @@ public class ChannelProvider {
     }
 
     private static Bootstrap initializeBootstrap() {
-        eventLoopGroup = new NioEventLoopGroup();
+        workerGroup = new NioEventLoopGroup();
         Bootstrap bootstrap = new Bootstrap();
-        bootstrap.group(eventLoopGroup)
+        bootstrap.group(workerGroup)
                 .channel(NioSocketChannel.class)
                 //连接超时时间，超过该时间则连接失败, 5s
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)

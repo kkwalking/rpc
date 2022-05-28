@@ -18,6 +18,14 @@ import java.util.List;
  * @author zzk
  * @date 2021/12/8
  * description  通用解码器（入站）
+ *              自定义数据包还解决了TCP粘包拆包问题
+ *              这里可以使用一个Message将RpcRequest和RpcResponse统一起来
+ *                包格式:
+ *                    magicCode :  4 bytes
+ *                    packageType: 4 bytes
+ *                    serializerCode:  4 bytes
+ *                    length:      4 bytes
+ *                    object:      bytes of the serialized object
  */
 @Slf4j
 public class CommonDecoder extends ReplayingDecoder {

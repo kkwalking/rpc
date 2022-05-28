@@ -10,7 +10,9 @@ import top.zzk.rpc.serializer.Serializer;
 /**
  * @author zzk
  * @date 2021/12/8
- * description  通用编码器 （出站）  
+ * description  通用编码器 （出站）
+ *              自定义数据包还解决了TCP粘包拆包问题
+ *              这里可以使用一个Message将RpcRequest和RpcResponse统一起来
  *              包格式: 
  *                  magicCode :  4 bytes
  *                  packageType: 4 bytes

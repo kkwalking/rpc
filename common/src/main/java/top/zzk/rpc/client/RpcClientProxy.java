@@ -28,6 +28,10 @@ public class RpcClientProxy implements InvocationHandler {
         this.client = client;
     }
 
+    public void shutdown() {
+        client.shutdown();
+    }
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         logger.info("调用方法:{}#{}", method.getDeclaringClass().getCanonicalName(), method.getName());

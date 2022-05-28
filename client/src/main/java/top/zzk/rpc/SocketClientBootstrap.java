@@ -28,5 +28,6 @@ public class SocketClientBootstrap {
         HelloObject helloMessage = new HelloObject(2, "hello message from zzk");
         res = helloService.hello(helloMessage);
         System.out.println(res);
+        proxy.shutdown();//关闭客户端
     }
 }

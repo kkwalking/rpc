@@ -24,18 +24,18 @@ import java.util.concurrent.CompletableFuture;
  */
 @Slf4j
 public class NettyClient extends AbstractRpcClient {
-    private static final Bootstrap bootstrap;
-    private static final EventLoopGroup group;
+//    private static final Bootstrap bootstrap;
+//    private static final EventLoopGroup group;
     private  ServiceDiscovery discovery;
     private  UnprocessedRequest unprocessedRequest;
     private LoadBalancer loadBalancer;
 
-    static {
-        group = new NioEventLoopGroup();
-        bootstrap = new Bootstrap();
-        bootstrap.group(group)
-                .channel(NioSocketChannel.class);
-    }
+//    static {
+//        group = new NioEventLoopGroup();
+//        bootstrap = new Bootstrap();
+//        bootstrap.group(group)
+//                .channel(NioSocketChannel.class);
+//    }
 
     /**
      * 默认使用随机负载均衡策略
@@ -56,15 +56,20 @@ public class NettyClient extends AbstractRpcClient {
     }
 
     @Override
+    public void shutdown() {
+        ChannelProvider.shutdown();
+    }
+
+    @Override
     public CompletableFuture<RpcResponse> sendRequest(RpcRequest rpcRequest) {
         CompletableFuture<RpcResponse> resultFuture = new CompletableFuture<>();
         try {
             InetSocketAddress inetSocketAddress = discovery.lookupService(rpcRequest.getInterfaceName());
             Channel channel = ChannelProvider.getChannel(inetSocketAddress, serializer);
-            if (!channel.isActive()) {
-                group.shutdownGracefully();
-                return null;
-            }
+//            if (!channel.isActive()) {
+//                group.shutdownGracefully();
+//                return null;
+//            }
             unprocessedRequest.put(rpcRequest.getRequestId(), resultFuture);
             channel.writeAndFlush(rpcRequest).addListener((ChannelFutureListener)future1 -> {
                 if (future1.isSuccess()) {

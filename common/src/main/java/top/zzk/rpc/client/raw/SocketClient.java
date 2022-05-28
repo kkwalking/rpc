@@ -27,6 +27,7 @@ import java.net.Socket;
 public class SocketClient extends AbstractRpcClient {
 
     private  ServiceDiscovery discovery;
+    private Socket socket;
 
     public SocketClient() {
         config();
@@ -43,13 +44,25 @@ public class SocketClient extends AbstractRpcClient {
     }
 
     @Override
+    public void shutdown() {
+        log.info("socket client shutdown now");
+        try {
+            socket.close();
+        } catch (IOException e) {
+            log.error("socket client shutdown error");
+            System.exit(1);
+        }
+    }
+
+    @Override
     public Object sendRequest(RpcRequest rpcRequest) {
         if(this.serializer == null) {
             log.error("序列化器未初始化");
             throw new RpcException(RpcError.SERIALIZER_UNDEFINED);
         }
         InetSocketAddress inetSocketAddress = discovery.lookupService(rpcRequest.getInterfaceName());
-        try (Socket socket = new Socket()) {
+        try  {
+            this.socket = new Socket();
             socket.connect(inetSocketAddress);
             OutputStream outputStream = socket.getOutputStream();
             InputStream inputStream = socket.getInputStream();

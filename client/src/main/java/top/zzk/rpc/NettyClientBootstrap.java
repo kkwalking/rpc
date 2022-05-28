@@ -29,6 +29,7 @@ public class NettyClientBootstrap {
         res = echoService.echo("test echoService by netty way");
         System.out.println(res);
         System.out.println("-----------------------------------------");
+        rpcClientProxy.shutdown(); //关闭客户端
 //        System.exit(0); /* 注释这里看心跳检测效果 */
     }
 }

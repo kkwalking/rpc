@@ -56,7 +56,7 @@ public class NettyServer extends AbstractRpcServer {
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .option(ChannelOption.SO_BACKLOG, 256)
-                    .option(ChannelOption.SO_KEEPALIVE, true)
+                    .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .childOption(ChannelOption.TCP_NODELAY, true)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
@@ -77,6 +77,5 @@ public class NettyServer extends AbstractRpcServer {
             bossGroup.shutdownGracefully();
             workGroup.shutdownGracefully();
         }
-
     }
 }

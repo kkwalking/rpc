@@ -12,4 +12,6 @@ public interface RpcClient {
     Object sendRequest(RpcRequest rpcRequest);
     void config();
     void setSerializer(int serializerCode);
+
+    void shutdown();
 }

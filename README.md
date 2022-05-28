@@ -11,7 +11,7 @@ The project is a tiny framework of RPC in the PRC learning process.
 - 实现了两种通信方式：直接使用JDK socket和netty方式
 - 实现了多种序列化方式：Json、Hessian、Kryo、Protostuff
 - 支持注册中心/服务发现、序列化器、负载均衡策略可配置，非硬编码
-- 实现注解进行服务自动注册
+- 实现通过注解进行服务端的服务自动注册的特性
 
 ### 待添加特性：
 - 支持配置文件进行服务自动注册
